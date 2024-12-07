@@ -1,0 +1,33 @@
+services:
+  bank-postgres:
+    image: postgres:16.3
+    container_name: bank-postgres
+    hostname: db
+    restart: always
+    environment:
+      POSTGRES_DB: "bank"
+      POSTGRES_USER: "bank"
+      POSTGRES_PASSWORD: "bank"
+    volumes:
+      - /var/lib/postgresql/bank:/var/lib/postgresql/data
+    networks:
+       - bank-backend
+    ports:
+      - "5800:5432"
+
+  bank-api:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    restart: always
+    image: bank
+    container_name: bank
+    networks:
+      - bank-backend
+    depends_on:
+      - bank-postgres
+    ports:
+      - "8400:8080"
+
+networks:
+  bank-backend:
