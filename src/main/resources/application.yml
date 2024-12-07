@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: kids-bank-api
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+#    url: jdbc:postgresql://db:5432/bank   // TODO: Перед деплойем поменять на вот это, а нижнее закоментить или убрать
+    url: jdbc:postgresql://localhost:5800/bank
+    username: bank
+    password: bank
+    driver-class-name: org.postgresql.Driver
+
+token:
+  secret:
+    key: cf1865657815ab5bfeb6305237a776a5a3390e083c78779c722bcd3ccf679cdda2f1e3e8d93e56842c55fcfccb5bd7bb41424dc3f8d0d9c984eadb9ececb1562
+
+server:
+  port: 8080
