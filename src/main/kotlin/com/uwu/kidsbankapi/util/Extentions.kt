@@ -1,9 +1,14 @@
-package com.uwu.zooapi.util
+package com.uwu.kidsbankapi.util
 
 import com.uwu.kidsbankapi.dto.User
-import com.uwu.zooapi.entity.UserEntity
+import com.uwu.kidsbankapi.entity.UserEntity
 
 fun UserEntity.convertToUserDTO() = User(
-    login = this.username,
-    authPassword = this.password
+    username = this.login,
+    lastname = this.lastname,
+    name = this.name,
+    fatherName = this.fatherName,
+    birthDate = this.birthDate,
+    city = this.city,
+    role = this.role
 )

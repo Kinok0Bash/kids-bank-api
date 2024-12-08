@@ -1,7 +1,6 @@
 package com.uwu.kidsbankapi.config
 
 import com.uwu.kidsbankapi.repository.UserRepository
-import com.uwu.zooapi.util.convertToUserDTO
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -19,7 +18,7 @@ class ApplicationConfig (
     @Bean
     fun userDetailsService(): UserDetailsService? {
         return UserDetailsService { email: String ->
-            userRepository.findByUsername(email).convertToUserDTO()
+            userRepository.findByLogin(email)
         }
     }
 

@@ -1,6 +1,6 @@
 package com.uwu.kidsbankapi.service
 
-import com.uwu.kidsbankapi.dto.User
+import com.uwu.kidsbankapi.entity.UserEntity
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -29,7 +29,7 @@ class JwtService {
 
     fun getSingInKey(): Key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSigningKey))
 
-    fun generateTokens(userDetails: User): ArrayList<String> {
+    fun generateTokens(userDetails: UserEntity): ArrayList<String> {
         logger.info("Beginning of generate token")
         val header = HashMap<String, Any>()
         header["typ"] = "JWT"
