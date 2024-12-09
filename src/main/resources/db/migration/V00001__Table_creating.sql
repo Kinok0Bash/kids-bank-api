@@ -47,11 +47,10 @@ CREATE TABLE IF NOT EXISTS "shops" (
 CREATE TABLE IF NOT EXISTS "transactions" (
     "id" uuid NOT NULL UNIQUE ,
     "from" uuid NOT NULL ,
-    "to" uuid NOT NULL ,
-    "type" varchar(20) NOT NULL ,
+    "to" int NOT NULL ,
     "time" timestamp with time zone NOT NULL ,
     "sum" int NOT NULL ,
     PRIMARY KEY ("id"),
     CONSTRAINT "transactions_fk1" FOREIGN KEY ("from") REFERENCES "accounts"("id"),
-    CONSTRAINT "transactions_fk2" FOREIGN KEY ("to") REFERENCES "accounts"("id")
+    CONSTRAINT "transactions_fk2" FOREIGN KEY ("to") REFERENCES "shops"("id")
 );
