@@ -57,7 +57,7 @@ class ReportService(
         val body = StringBuilder()
         data.forEach { row ->
             body.append(String.format(
-                " %-40s | %-20s | %-25s | %-15s | %-15s",
+                " %-40s | %-20s | %-25s | %-15s",
                 row.childName,
                 row.shop,
                 row.category,
