@@ -36,7 +36,11 @@ data class UserEntity(
     val city: String = "",
 
     @Column(name = "role", nullable = false, length = 10)
-    val role: Role = Role.PARENT
+    val role: Role = Role.PARENT,
+
+    @OneToOne
+    @JoinColumn(name = "child", nullable = true)
+    var child: UserEntity? = null
 ) : UserDetails {
     override fun getUsername() = this.login
     override fun getPassword() = this.authPassword

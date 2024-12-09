@@ -72,7 +72,8 @@ class AuthenticationService(
             fatherName = request.fatherName,
             birthDate = request.birthDate,
             city = request.city,
-            role = Role.PARENT
+            role = Role.PARENT,
+            child = null
         )
         val tokens = jwtService.generateTokens(user)
 
@@ -114,15 +115,7 @@ class AuthenticationService(
 
     fun whoAmI(token: String): User {
         val userEntity = userRepository.findByLogin(jwtService.extractUsername(token.substring(7)))
-        val user = User(
-            lastname = userEntity.lastname,
-            name = userEntity.name,
-            fatherName = userEntity.fatherName,
-            username = userEntity.login,
-            birthDate = userEntity.birthDate,
-            city = userEntity.city,
-            role = userEntity.role
-        )
+        val user = userEntity.convertToUserDTO()
         logger.info("WhoAmI for user ${user.username} has been returned")
         return user
     }

@@ -15,10 +15,6 @@ data class CategoryLimitEntity(
     val category: ShopCategoryEntity = ShopCategoryEntity(),
 
     @ManyToOne
-    @JoinColumn(name = "parent", nullable = false)
-    val parent: UserEntity = UserEntity(),
-
-    @ManyToOne
     @JoinColumn(name = "child", nullable = false)
     val child: UserEntity = UserEntity()
 )

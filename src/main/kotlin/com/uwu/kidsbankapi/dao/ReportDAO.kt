@@ -37,26 +37,24 @@ class ReportDAO(private val jdbcTemplate: JdbcTemplate) {
 
     private val limitsReportQuery = """
         SELECT
-            CONCAT("users"."lastname" , ' ', "users"."name") AS "ФИ ребенка",
-            "shops"."name" AS "Магазин",
-            "shop_categories"."name" AS "Категория магазина",
-            SUM("transactions"."sum") AS "Сумма потрачена"
+            CONCAT("child"."lastname" , ' ', "child"."name" , ' ', "child"."father_name") AS "ФИО ребенка",
+            CONCAT("parent"."lastname" , ' ', "parent"."name" , ' ', "parent"."father_name") AS "ФИО родителя",
+            "shop_categories"."name" AS "Запрещенная категория"
         FROM
-            "transactions"
+            "categories_limit"
                 JOIN
-            "accounts" ON "transactions"."from" = "accounts"."id"
+            "shop_categories" ON "categories_limit"."category" = "shop_categories"."id"
                 JOIN
-            "users" ON "accounts"."user" = "users"."id"
+            "users" AS "child" ON "categories_limit"."child" = "child"."id"
                 JOIN
-            "shops" ON "transactions"."to" = "shops"."id"
-                JOIN
-            "shop_categories" ON "shops"."category" = "shop_categories"."id"
+            "users" AS "parent" ON "parent"."child" = child."id"
         WHERE
-            "users"."role" = 'CHILD'
+            "parent"."role" = 'PARENT'
+          AND "child"."role" = 'CHILD'
         GROUP BY
-            "users"."name", "users"."lastname", "shop_categories"."name", "shops"."name"
+            "ФИО ребенка", "ФИО родителя", "Запрещенная категория"
         ORDER BY
-            "ФИ ребенка", "Сумма потрачена" DESC;
+            "ФИО ребенка";
     """.trimIndent()
 
     private val shopTransactionsReportQuery = """

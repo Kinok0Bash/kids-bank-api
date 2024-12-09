@@ -1,25 +1,25 @@
 -- Вставка пользователей (10 родителей и 10 детей)
-INSERT INTO "users" ("id", "lastname", "name", "father_name", "login", "password", "birth_date", "city", "role") VALUES
-    ('11111111-1111-1111-1111-111111111111', 'Иванов', 'Иван', 'Иванович', 'ivanov_parent', 'password1', '1980-01-01', 'Москва', 'PARENT'),
-    ('22222222-2222-2222-2222-222222222222', 'Петров', 'Петр', 'Петрович', 'petrov_parent', 'password2', '1975-02-01', 'Санкт-Петербург', 'PARENT'),
-    ('33333333-3333-3333-3333-333333333333', 'Сидоров', 'Сидор', 'Сидорович', 'sidorov_parent', 'password3', '1985-03-01', 'Новосибирск', 'PARENT'),
-    ('44444444-4444-4444-4444-444444444444', 'Смирнов', 'Алексей', 'Алексеевич', 'smirnov_parent', 'password4', '1978-04-01', 'Екатеринбург', 'PARENT'),
-    ('55555555-5555-5555-5555-555555555555', 'Кузнецов', 'Николай', 'Николаевич', 'kuznetsov_parent', 'password5', '1982-05-01', 'Казань', 'PARENT'),
-    ('66666666-6666-6666-6666-666666666666', 'Федоров', 'Федор', 'Федорович', 'fedorov_parent', 'password6', '1986-06-01', 'Челябинск', 'PARENT'),
-    ('77777777-7777-7777-7777-777777777777', 'Михайлов', 'Михаил', 'Михайлович', 'mikhailov_parent', 'password7', '1983-07-01', 'Самара', 'PARENT'),
-    ('88888888-8888-8888-8888-888888888888', 'Алексеев', 'Александр', 'Александрович', 'alexeev_parent', 'password8', '1987-08-01', 'Ростов-на-Дону', 'PARENT'),
-    ('99999999-9999-9999-9999-999999999999', 'Попов', 'Дмитрий', 'Дмитриевич', 'popov_parent', 'password9', '1984-09-01', 'Уфа', 'PARENT'),
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Васильев', 'Василий', 'Васильевич', 'vasiliev_parent', 'password10', '1979-10-01', 'Красноярск', 'PARENT'),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Иванов', 'Артем', 'Иванович', 'ivanov_child', 'password11', '2005-01-01', 'Москва', 'CHILD'),
-    ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'Петров', 'Игорь', 'Петрович', 'petrov_child', 'password12', '2007-02-01', 'Санкт-Петербург', 'CHILD'),
-    ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Сидоров', 'Денис', 'Сидорович', 'sidorov_child', 'password13', '2008-03-01', 'Новосибирск', 'CHILD'),
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Смирнов', 'Евгений', 'Алексеевич', 'smirnov_child', 'password14', '2010-04-01', 'Екатеринбург', 'CHILD'),
-    ('ffffffff-ffff-ffff-ffff-ffffffffffff', 'Кузнецов', 'Максим', 'Николаевич', 'kuznetsov_child', 'password15', '2006-05-01', 'Казань', 'CHILD'),
-    ('11111111-aaaa-aaaa-aaaa-111111111111', 'Федоров', 'Глеб', 'Федорович', 'fedorov_child', 'password16', '2004-06-01', 'Челябинск', 'CHILD'),
-    ('22222222-bbbb-bbbb-bbbb-222222222222', 'Михайлов', 'Олег', 'Михайлович', 'mikhailov_child', 'password17', '2009-07-01', 'Самара', 'CHILD'),
-    ('33333333-cccc-cccc-cccc-333333333333', 'Алексеев', 'Антон', 'Александрович', 'alexeev_child', 'password18', '2011-08-01', 'Ростов-на-Дону', 'CHILD'),
-    ('44444444-dddd-dddd-dddd-444444444444', 'Попов', 'Никита', 'Дмитриевич', 'popov_child', 'password19', '2003-09-01', 'Уфа', 'CHILD'),
-    ('55555555-eeee-eeee-eeee-555555555555', 'Васильев', 'Владислав', 'Васильевич', 'vasiliev_child', 'password20', '2002-10-01', 'Красноярск', 'CHILD');
+INSERT INTO "users" ("id", "lastname", "name", "father_name", "login", "password", "birth_date", "city", "role", "child") VALUES
+    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Иванов', 'Артем', 'Иванович', 'ivanov_child', 'password11', '2005-01-01', 'Москва', 'CHILD', null),
+    ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'Петров', 'Игорь', 'Петрович', 'petrov_child', 'password12', '2007-02-01', 'Санкт-Петербург', 'CHILD', null),
+    ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Сидоров', 'Денис', 'Сидорович', 'sidorov_child', 'password13', '2008-03-01', 'Новосибирск', 'CHILD', null),
+    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Смирнов', 'Евгений', 'Алексеевич', 'smirnov_child', 'password14', '2010-04-01', 'Екатеринбург', 'CHILD', null),
+    ('ffffffff-ffff-ffff-ffff-ffffffffffff', 'Кузнецов', 'Максим', 'Николаевич', 'kuznetsov_child', 'password15', '2006-05-01', 'Казань', 'CHILD', null),
+    ('11111111-aaaa-aaaa-aaaa-111111111111', 'Федоров', 'Глеб', 'Федорович', 'fedorov_child', 'password16', '2004-06-01', 'Челябинск', 'CHILD', null),
+    ('22222222-bbbb-bbbb-bbbb-222222222222', 'Михайлов', 'Олег', 'Михайлович', 'mikhailov_child', 'password17', '2009-07-01', 'Самара', 'CHILD', null),
+    ('33333333-cccc-cccc-cccc-333333333333', 'Алексеев', 'Антон', 'Александрович', 'alexeev_child', 'password18', '2011-08-01', 'Ростов-на-Дону', 'CHILD', null),
+    ('44444444-dddd-dddd-dddd-444444444444', 'Попов', 'Никита', 'Дмитриевич', 'popov_child', 'password19', '2003-09-01', 'Уфа', 'CHILD', null),
+    ('55555555-eeee-eeee-eeee-555555555555', 'Васильев', 'Владислав', 'Васильевич', 'vasiliev_child', 'password20', '2002-10-01', 'Красноярск', 'CHILD', null),
+    ('11111111-1111-1111-1111-111111111111', 'Иванов', 'Иван', 'Иванович', 'ivanov_parent', 'password1', '1980-01-01', 'Москва', 'PARENT', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
+    ('22222222-2222-2222-2222-222222222222', 'Петров', 'Петр', 'Петрович', 'petrov_parent', 'password2', '1975-02-01', 'Санкт-Петербург', 'PARENT', 'cccccccc-cccc-cccc-cccc-cccccccccccc'),
+    ('33333333-3333-3333-3333-333333333333', 'Сидоров', 'Сидор', 'Сидорович', 'sidorov_parent', 'password3', '1985-03-01', 'Новосибирск', 'PARENT', 'dddddddd-dddd-dddd-dddd-dddddddddddd'),
+    ('44444444-4444-4444-4444-444444444444', 'Смирнов', 'Алексей', 'Алексеевич', 'smirnov_parent', 'password4', '1978-04-01', 'Екатеринбург', 'PARENT', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee'),
+    ('55555555-5555-5555-5555-555555555555', 'Кузнецов', 'Николай', 'Николаевич', 'kuznetsov_parent', 'password5', '1982-05-01', 'Казань', 'PARENT', 'ffffffff-ffff-ffff-ffff-ffffffffffff'),
+    ('66666666-6666-6666-6666-666666666666', 'Федоров', 'Федор', 'Федорович', 'fedorov_parent', 'password6', '1986-06-01', 'Челябинск', 'PARENT', '11111111-aaaa-aaaa-aaaa-111111111111'),
+    ('77777777-7777-7777-7777-777777777777', 'Михайлов', 'Михаил', 'Михайлович', 'mikhailov_parent', 'password7', '1983-07-01', 'Самара', 'PARENT', '22222222-bbbb-bbbb-bbbb-222222222222'),
+    ('88888888-8888-8888-8888-888888888888', 'Алексеев', 'Александр', 'Александрович', 'alexeev_parent', 'password8', '1987-08-01', 'Ростов-на-Дону', 'PARENT', '33333333-cccc-cccc-cccc-333333333333'),
+    ('99999999-9999-9999-9999-999999999999', 'Попов', 'Дмитрий', 'Дмитриевич', 'popov_parent', 'password9', '1984-09-01', 'Уфа', 'PARENT', '44444444-dddd-dddd-dddd-444444444444'),
+    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Васильев', 'Василий', 'Васильевич', 'vasiliev_parent', 'password10', '1979-10-01', 'Красноярск', 'PARENT', '55555555-eeee-eeee-eeee-555555555555');
 
 -- Вставка данных в таблицу счетов
 INSERT INTO "accounts" ("id", "user", "balance") VALUES
@@ -72,13 +72,13 @@ INSERT INTO "shops" ("name", "category") VALUES
     ('М.Видео', 3);           -- Электроника
 
 -- Вставка лимитов по категориям
-INSERT INTO "categories_limit" ("category", "parent", "child") VALUES
-    (1, '11111111-1111-1111-1111-111111111111', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
-    (2, '22222222-2222-2222-2222-222222222222', 'cccccccc-cccc-cccc-cccc-cccccccccccc'),
-    (3, '11111111-1111-1111-1111-111111111111', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
-    (4, '11111111-1111-1111-1111-111111111111', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
-    (5, '22222222-2222-2222-2222-222222222222', 'cccccccc-cccc-cccc-cccc-cccccccccccc'),
-    (6, '11111111-1111-1111-1111-111111111111', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');
+INSERT INTO "categories_limit" ("category", "child") VALUES
+    (1, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
+    (2, 'cccccccc-cccc-cccc-cccc-cccccccccccc'),
+    (3, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
+    (4, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
+    (5, 'cccccccc-cccc-cccc-cccc-cccccccccccc'),
+    (6, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');
 
 -- Вставка транзакций
 INSERT INTO "transactions" ("id", "from", "to", "time", "sum") VALUES
