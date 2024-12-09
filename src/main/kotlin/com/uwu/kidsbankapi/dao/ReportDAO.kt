@@ -5,6 +5,7 @@ import com.uwu.kidsbankapi.dto.report.TransactionReport
 import com.uwu.kidsbankapi.dto.report.LimitsReport
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Service
@@ -83,13 +84,14 @@ class ReportDAO(private val jdbcTemplate: JdbcTemplate) {
 
     fun getTransactionsReport(): List<TransactionReport> {
         val data = jdbcTemplate.queryForList(transactionsReportQuery)
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
         return data.map {
             TransactionReport(
                 childFullName = it["ФИО ребенка"].toString(),
                 shopName = it["Название магазина"].toString(),
                 shopCategory = it["Категория магазина"].toString(),
-                sum = it["Сумма покупки"].toString(),
-                date = it["Дата и время"].toString()
+                sum = it["Сумма траты"].toString(),
+                date = dateFormat.format(it["Дата покупки"])
             )
         }
     }

@@ -1,12 +1,14 @@
 package com.uwu.kidsbankapi.service
 
 import com.uwu.kidsbankapi.dao.ReportDAO
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class ReportService(
     private val reportDAO: ReportDAO
 ) {
+    private val logger = LoggerFactory.getLogger(ReportService::class.java)
 
     fun generateTransactionsTxtReport(): ByteArray {
         val data = reportDAO.getTransactionsReport()
@@ -23,9 +25,10 @@ class ReportService(
                 row.shopCategory,
                 row.sum,
                 row.date
-            ))
+            ) + "\n")
         }
 
+        logger.info("Отчет сформирован успешно")
         return (header + body.toString()).toByteArray(Charsets.UTF_8)
     }
 
@@ -42,9 +45,10 @@ class ReportService(
                 row.childFullName,
                 row.parentFullName,
                 row.category
-            ))
+            ) + "\n")
         }
 
+        logger.info("Отчет сформирован успешно")
         return (header + body.toString()).toByteArray(Charsets.UTF_8)
     }
 
@@ -62,9 +66,10 @@ class ReportService(
                 row.shop,
                 row.category,
                 row.sum
-            ))
+            ) + "\n")
         }
 
+        logger.info("Отчет сформирован успешно")
         return (header + body.toString()).toByteArray(Charsets.UTF_8)
     }
 }
