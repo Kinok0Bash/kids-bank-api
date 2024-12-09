@@ -4,8 +4,10 @@ import com.uwu.kidsbankapi.dto.User
 import com.uwu.kidsbankapi.dto.request.AuthenticationRequest
 import com.uwu.kidsbankapi.dto.request.RegistrationRequest
 import com.uwu.kidsbankapi.dto.response.AuthenticationResponse
+import com.uwu.kidsbankapi.entity.AccountEntity
 import com.uwu.kidsbankapi.entity.UserEntity
 import com.uwu.kidsbankapi.enum.Role
+import com.uwu.kidsbankapi.repository.AccountRepository
 import com.uwu.kidsbankapi.repository.UserRepository
 import com.uwu.kidsbankapi.util.convertToUserDTO
 import jakarta.servlet.http.Cookie
@@ -26,7 +28,8 @@ class AuthenticationService(
     private val userRepository: UserRepository,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val accountRepository: AccountRepository
 ) {
     private val logger: Logger = LoggerFactory.getLogger(AuthenticationService::class.java)
 
@@ -51,15 +54,15 @@ class AuthenticationService(
     @Transactional
     fun registration(request: RegistrationRequest, response: HttpServletResponse): AuthenticationResponse {
         if (!isValidCredentials(request)) {
-            logger.error("Data is empty")
-            throw Exception("Заполнены не все данные!!!")
+            logger.error("Заполнены не все данные")
+            throw Exception("Заполнены не все данные")
         }
 
         val usernames = userRepository.findAllUsernames()
 
         usernames.forEach { username ->
             if (request.username == username) {
-                logger.error("Error of registration: User with username ${request.username} is already exist")
+                logger.error("Ошибка регистрации: Пользователь с username ${request.username} уже существует")
                 throw Exception("Пользователь с таким username уже существует")
             }
         }
@@ -78,10 +81,14 @@ class AuthenticationService(
         val tokens = jwtService.generateTokens(user)
 
         userRepository.save(user)
+
+        val userAccount = AccountEntity(user = user, balance = 0)
+        accountRepository.save(userAccount)
+
         setRefreshToken(response, tokens[1])
 
-        logger.debug("User with username ${user.login} has been created")
-        logger.info("Registration is successful!")
+        logger.debug("Пользователь с username ${user.login} был создан")
+        logger.info("Регистрация прошла успешно")
 
         return AuthenticationResponse(tokens[0], user.convertToUserDTO())
     }
@@ -98,8 +105,8 @@ class AuthenticationService(
     @Transactional
     fun refresh(userToken: String, response: HttpServletResponse): AuthenticationResponse {
         if (userToken.isEmpty()) {
-            logger.error("Token is empty")
-            throw Exception("Token is empty")
+            logger.error("Токен пуст")
+            throw Exception("Токен пуст")
         }
 
         val user = userRepository.findByLogin(jwtService.extractUsername(userToken))
@@ -108,7 +115,7 @@ class AuthenticationService(
         userRepository.save(user)
         setRefreshToken(response, tokens[1])
 
-        logger.debug("Token of user ${user.login} is refreshed")
+        logger.debug("Токен пользователя ${user.login} обновлен")
 
         return AuthenticationResponse(tokens[0], user.convertToUserDTO())
     }
@@ -116,7 +123,7 @@ class AuthenticationService(
     fun whoAmI(token: String): User {
         val userEntity = userRepository.findByLogin(jwtService.extractUsername(token.substring(7)))
         val user = userEntity.convertToUserDTO()
-        logger.info("WhoAmI for user ${user.username} has been returned")
+        logger.info("WhoAmI для пользователя ${user.username} был возвращен")
         return user
     }
 
