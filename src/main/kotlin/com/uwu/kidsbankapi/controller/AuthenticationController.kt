@@ -54,7 +54,7 @@ class AuthenticationController(
     }
 
     @GetMapping("/who-am-i")
-    @Operation(description = "Полная инфа об аутентифицированном пользователе")
+    @Operation(description = "Информация об аутентифицированном пользователе")
     fun whoAmI(@RequestHeader(value = "Authorization") token: String): ResponseEntity<User> {
         logger.info("Запрос на WhoAmI")
         return ResponseEntity.ok().body(authenticationService.whoAmI(token))

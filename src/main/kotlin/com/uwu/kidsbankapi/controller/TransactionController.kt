@@ -3,20 +3,13 @@ package com.uwu.kidsbankapi.controller
 import com.uwu.kidsbankapi.dto.Transaction
 import com.uwu.kidsbankapi.dto.request.PayRequest
 import com.uwu.kidsbankapi.dto.request.TransferRequest
-import com.uwu.kidsbankapi.enum.TransactionStatus
+import com.uwu.kidsbankapi.dto.response.TransactionResponse
 import com.uwu.kidsbankapi.service.TransactionService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/transaction")
@@ -46,9 +39,9 @@ class TransactionController(private val transactionService: TransactionService) 
     fun transfer(
         @RequestHeader(name = "Authorization") token: String,
         @RequestBody request: TransferRequest
-    ): ResponseEntity<Map<String, TransactionStatus>> {
+    ): ResponseEntity<TransactionResponse> {
         logger.info("Запрос на перевод ребенку ${request.sum} рубль(ей)")
-        return ResponseEntity.ok(mapOf("status" to transactionService.transfer(token, request.sum)))
+        return ResponseEntity.ok(transactionService.transfer(token, request.sum))
     }
 
     @PostMapping("/pay")
@@ -56,9 +49,9 @@ class TransactionController(private val transactionService: TransactionService) 
     fun pay(
         @RequestHeader(name = "Authorization") token: String,
         @RequestBody request: PayRequest
-    ): ResponseEntity<Map<String, TransactionStatus>> {
+    ): ResponseEntity<TransactionResponse> {
         logger.info("Запрос на оплату счета от ${request.shopId} на ${request.sum}")
-        return ResponseEntity.ok(mapOf("status" to transactionService.pay(token, request)))
+        return ResponseEntity.ok(transactionService.pay(token, request))
     }
 
     @ExceptionHandler

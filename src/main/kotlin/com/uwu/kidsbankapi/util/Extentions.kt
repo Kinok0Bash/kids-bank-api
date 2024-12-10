@@ -1,7 +1,10 @@
 package com.uwu.kidsbankapi.util
 
+import com.uwu.kidsbankapi.dto.Limit
 import com.uwu.kidsbankapi.dto.Transaction
 import com.uwu.kidsbankapi.dto.User
+import com.uwu.kidsbankapi.entity.CategoryLimitEntity
+import com.uwu.kidsbankapi.entity.ShopCategoryEntity
 import com.uwu.kidsbankapi.entity.TransactionEntity
 import com.uwu.kidsbankapi.entity.UserEntity
 import com.uwu.kidsbankapi.enum.Role
@@ -27,4 +30,15 @@ fun TransactionEntity.convertToTransactionDTO() = Transaction(
     category = this.to.category.name,
     sum = this.sum,
     date = Date(this.time.time)
+)
+
+fun ShopCategoryEntity.convertToLimitDTO() = Limit(
+    id = this.id,
+    name = this.name,
+    isLimit = false
+)
+
+fun Limit.convertToCategoryLimitEntity(child: UserEntity) = CategoryLimitEntity(
+    category = ShopCategoryEntity(this.id, this.name),
+    child = child
 )
