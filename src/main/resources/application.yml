@@ -9,8 +9,8 @@ spring:
       hibernate:
         format_sql: true
   datasource:
-#    url: jdbc:postgresql://db:5432/bank   # TODO: Перед деплойем поменять на вот это, а нижнее закоментить или убрать
-    url: jdbc:postgresql://localhost:5800/bank
+    url: jdbc:postgresql://db:5432/bank
+#    url: jdbc:postgresql://localhost:5800/bank
     username: bank
     password: bank
     driver-class-name: org.postgresql.Driver
