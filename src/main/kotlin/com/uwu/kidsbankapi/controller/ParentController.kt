@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/parent")
 @Tag(
-    name = "Родительский контроль",
+    name = "Функционал родителя",
     description = "Контроллер функционала, связанного с родителем"
 )
 class ParentController(private val parentService: ParentService) {
@@ -28,7 +28,7 @@ class ParentController(private val parentService: ParentService) {
         return ResponseEntity.ok(parentService.createChildAccount(request, token))
     }
 
-    @PostMapping("/salary")
+    @PutMapping("/salary")
     @Operation(summary = "Получить зарплату пользователю")
     fun getSalary(@RequestHeader(name = "Authorization") token: String): ResponseEntity<Map<String, String>> {
         logger.info("Запрос на получение зарплаты")

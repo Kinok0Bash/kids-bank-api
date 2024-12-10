@@ -1,8 +1,11 @@
 package com.uwu.kidsbankapi.util
 
+import com.uwu.kidsbankapi.dto.Transaction
 import com.uwu.kidsbankapi.dto.User
+import com.uwu.kidsbankapi.entity.TransactionEntity
 import com.uwu.kidsbankapi.entity.UserEntity
 import com.uwu.kidsbankapi.enum.Role
+import java.util.*
 
 fun UserEntity.convertToUserDTO(): User {
     val isGetChild = (this.role == Role.PARENT && this.child != null)
@@ -18,3 +21,10 @@ fun UserEntity.convertToUserDTO(): User {
         isGetKid = isGetChild
     )
 }
+
+fun TransactionEntity.convertToTransactionDTO() = Transaction(
+    name = this.to.name,
+    category = this.to.category.name,
+    sum = this.sum,
+    date = Date(this.time.time)
+)

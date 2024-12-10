@@ -1,6 +1,8 @@
 package com.uwu.kidsbankapi.entity
 
 import jakarta.persistence.*
+import java.sql.Date
+import java.time.LocalDate
 import java.util.*
 
 @Entity
@@ -16,10 +18,10 @@ data class TransactionEntity(
 
     @ManyToOne
     @JoinColumn(name = "to", nullable = false)
-    val to: AccountEntity = AccountEntity(),
+    val to: ShopEntity = ShopEntity(),
 
-    @Column(name = "type", nullable = false, length = 20)
-    val type: String = "",
+    @Column(name = "time", nullable = false)
+    val time: Date = Date.valueOf(LocalDate.now()),
 
     @Column(name = "sum", nullable = false)
     val sum: Int = 0
