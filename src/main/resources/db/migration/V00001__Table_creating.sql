@@ -15,10 +15,10 @@ CREATE TABLE IF NOT EXISTS "users" (
 
 CREATE TABLE IF NOT EXISTS "accounts" (
     "id" uuid NOT NULL UNIQUE ,
-    "user" uuid NOT NULL ,
+    "user_id" uuid NOT NULL ,
     "balance" int NOT NULL DEFAULT 0,
     PRIMARY KEY ("id"),
-    CONSTRAINT "accounts_fk1" FOREIGN KEY ("user") REFERENCES "users"("id")
+    CONSTRAINT "accounts_fk1" FOREIGN KEY ("user_id") REFERENCES "users"("id")
 );
 
 CREATE TABLE IF NOT EXISTS "shop_categories" (

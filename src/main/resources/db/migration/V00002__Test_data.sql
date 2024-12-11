@@ -22,7 +22,7 @@ INSERT INTO "users" ("id", "lastname", "name", "father_name", "login", "password
     ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Васильев', 'Василий', 'Васильевич', 'vasiliev_parent', 'password10', '1979-10-01', 'Красноярск', 'PARENT', '55555555-eeee-eeee-eeee-555555555555');
 
 -- Вставка данных в таблицу счетов
-INSERT INTO "accounts" ("id", "user", "balance") VALUES
+INSERT INTO "accounts" ("id", "user_id", "balance") VALUES
     ('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', 10000),
     ('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', 9000),
     ('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', 8000),

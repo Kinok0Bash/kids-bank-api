@@ -11,7 +11,7 @@ data class AccountEntity(
     val id: UUID = UUID.randomUUID(),
 
     @ManyToOne
-    @JoinColumn(name = "user", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     val user: UserEntity = UserEntity(),
 
     @Column(name = "balance", nullable = false)

@@ -23,7 +23,7 @@ data class UserEntity(
     @Column(name = "father_name", nullable = false)
     val fatherName: String = "",
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "login", nullable = false, unique = true)
     val login: String = "",
 
     @Column(name = "password", nullable = false)
@@ -41,6 +41,7 @@ data class UserEntity(
     @OneToOne
     @JoinColumn(name = "child", nullable = true)
     var child: UserEntity? = null
+
 ) : UserDetails {
     override fun getUsername() = this.login
     override fun getPassword() = this.authPassword
