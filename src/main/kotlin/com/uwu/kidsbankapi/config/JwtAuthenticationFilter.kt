@@ -1,7 +1,7 @@
 package com.uwu.kidsbankapi.config
 
 import com.uwu.kidsbankapi.service.JwtService
-import io.jsonwebtoken.ExpiredJwtException
+import com.uwu.kidsbankapi.util.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -25,36 +25,28 @@ class JwtAuthenticationFilter (
     ) {
         try {
             val authHeader = request.getHeader("Authorization")
-            logger.debug("Authorization header: $authHeader")
-
             if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer ")) {
                 filterChain.doFilter(request, response)
                 return
             }
 
             val jwt = authHeader.substring(7)
-            logger.debug("JWT token: $jwt")
-
             val userEmail = jwtService.extractUsername(jwt)
-            logger.debug("User email: $userEmail")
 
             if (userEmail.isNotEmpty() && SecurityContextHolder.getContext().authentication == null) {
                 val userDetails = this.userDetailsService.loadUserByUsername(userEmail)
-                logger.debug("User details: $userDetails")
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     val authToken = UsernamePasswordAuthenticationToken(userEmail, null, userDetails.authorities)
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                     SecurityContextHolder.getContext().authentication = authToken
-                    logger.debug("Authentication success")
-                } else {
-                    logger.debug("Invalid token")
-                }
+                } else throw JwtException()
             }
 
             filterChain.doFilter(request, response)
-        } catch (ex: ExpiredJwtException) {
+        } catch (ex: JwtException) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Срок действия токена истек")
+            logger.warn("Срок действия токена истек")
             return
         }
     }
