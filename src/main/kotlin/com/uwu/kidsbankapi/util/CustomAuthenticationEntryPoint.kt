@@ -24,7 +24,7 @@ class CustomAuthenticationEntryPoint : AuthenticationEntryPoint {
                 "error": "Unauthorized",
                 "path": "${request.requestURI}"
             }
-        """.trimMargin())
+            """.trimMargin())
 
         logger.warn("Запрос на \"${request.requestURI}\" отклонен. Отсутствует токен авторизации")
     }

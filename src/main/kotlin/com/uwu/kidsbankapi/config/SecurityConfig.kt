@@ -31,6 +31,9 @@ class SecurityConfig(
                         "/api/reports/transactions/download",
                         "/api/reports/shops/download",
                         "/api/reports/limits/download",
+                        "/swagger-ui/*",
+                        "/v3/api-docs",
+                        "/v3/api-docs/*"
                     )
                     .permitAll()
                     .anyRequest()

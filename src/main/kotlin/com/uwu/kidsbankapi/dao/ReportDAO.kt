@@ -20,11 +20,11 @@ class ReportDAO(private val jdbcTemplate: JdbcTemplate) {
         FROM
             "transactions"
                 JOIN
-            "accounts" ON "transactions"."from" = "accounts"."id"
+            "accounts" ON "transactions"."sender" = "accounts"."id"
                 JOIN
-            "users" ON "accounts"."user" = "users"."id"
+            "users" ON "accounts"."user_id" = "users"."id"
                 JOIN
-            "shops" ON "transactions"."to" = "shops"."id"
+            "shops" ON "transactions"."recipient" = "shops"."id"
                 JOIN
             "shop_categories" ON "shops"."category" = "shop_categories"."id"
         WHERE
@@ -66,11 +66,11 @@ class ReportDAO(private val jdbcTemplate: JdbcTemplate) {
         FROM
             "transactions"
                 JOIN
-            "accounts" ON "transactions"."from" = "accounts"."id"
+            "accounts" ON "transactions"."sender" = "accounts"."id"
                 JOIN
-            "users" ON "accounts"."user" = "users"."id"
+            "users" ON "accounts"."user_id" = "users"."id"
                 JOIN
-            "shops" ON "transactions"."to" = "shops"."id"
+            "shops" ON "transactions"."recipient" = "shops"."id"
                 JOIN
             "shop_categories" ON "shops"."category" = "shop_categories"."id"
         WHERE

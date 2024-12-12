@@ -8,6 +8,7 @@ import com.uwu.kidsbankapi.util.convertToCategoryLimitEntity
 import com.uwu.kidsbankapi.util.convertToLimitDTO
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class LimitService(
@@ -21,7 +22,10 @@ class LimitService(
     fun getUserLimitList(token: String): MutableList<Limit> {
         isGetChild(token)
         val categories = shopCategoryRepository.findAll()
-        val userLimitList = categoryLimitRepository.findAllByChild(userRepository.findByLogin(jwtService.extractUsername(token)))
+        val userLimitList = categoryLimitRepository.findAllByChild(
+            userRepository.findByLogin(jwtService.extractUsername(token)).child
+                ?: throw Exception("У пользователя нет ребенка")
+        )
         val limitList = mutableListOf<Limit>()
 
         categories.forEach { category -> if (category.id != 0) limitList.add(category.convertToLimitDTO()) }
@@ -37,17 +41,23 @@ class LimitService(
         return limitList
     }
 
+    @Transactional
     fun setUserLimitList(token: String, request: List<Limit>): MutableList<Limit> {
         isGetChild(token)
-        val userLimitList = categoryLimitRepository.findAllByChild(userRepository.findByLogin(jwtService.extractUsername(token)))
+        val userLimitList = categoryLimitRepository.findAllByChild(
+            userRepository.findByLogin(jwtService.extractUsername(token)).child
+                ?: throw Exception("У пользователя нет ребенка")
+        )
 
         userLimitList.forEach { userLimit ->
             categoryLimitRepository.delete(userLimit)
         }
 
         request.forEach { limit ->
-            if (limit.isLimit) categoryLimitRepository.save(limit.convertToCategoryLimitEntity(
-                userRepository.findByLogin(jwtService.extractUsername(token)).child!!)
+            if (limit.isLimit) categoryLimitRepository.save(
+                limit.convertToCategoryLimitEntity(
+                    userRepository.findByLogin(jwtService.extractUsername(token)).child!!
+                )
             )
         }
 

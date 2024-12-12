@@ -33,7 +33,9 @@ class TransactionService(
         )
         val transactions = mutableListOf<Transaction>()
 
-        for (index in 0..<5) { transactions.add(transactionEntities[index].convertToTransactionDTO()) }
+        for (index in 0..<5) {
+            transactions.add(transactionEntities[index].convertToTransactionDTO())
+        }
 
         logger.info("Список последних пяти для пользователя ${jwtService.extractUsername(token)} получен")
         return transactions
@@ -53,13 +55,15 @@ class TransactionService(
     }
 
     fun transfer(token: String, sum: Int): TransactionResponse {
-        val parentAccount = accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token)))
-        if (userRepository.findByLogin(jwtService.extractUsername(token)).child == null || sum > parentAccount.balance){
+        val parentAccount =
+            accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token)))
+        if (userRepository.findByLogin(jwtService.extractUsername(token)).child == null || sum > parentAccount.balance) {
             logger.warn("У пользователя нет ребенка, либо не хватает средств на счету")
             return TransactionResponse(TransactionStatus.FAIL)
         }
 
-        val childAccount = accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token)).child!!)
+        val childAccount =
+            accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token)).child!!)
         childAccount.balance += sum
 
         return createTransaction(token, parentAccount, shopRepository.findShopEntityById(0), sum)
@@ -79,16 +83,14 @@ class TransactionService(
         }
 
         // Проверка на ограничение
-        if (userRepository.findByLogin(jwtService.extractUsername(token)).child != null) {
-            categoryLimitRepository.findAllByChild(
-                userRepository.findByLogin(jwtService.extractUsername(token)).child!!
-            ).forEach { categoryLimitEntity ->
+        categoryLimitRepository.findAllByChild(userRepository.findByLogin(jwtService.extractUsername(token)))
+            .forEach { categoryLimitEntity ->
                 if (categoryLimitEntity.category.id == to.category.id) {
                     logger.warn("Данная транзакция запрещена ограничением")
-                    return TransactionResponse(TransactionStatus.FAIL)
+                    return TransactionResponse(TransactionStatus.FORBIDDEN)
                 }
             }
-        }
+
 
         from.balance -= sum
 

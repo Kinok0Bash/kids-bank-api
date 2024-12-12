@@ -13,11 +13,11 @@ data class TransactionEntity(
     val id: UUID = UUID.randomUUID(),
 
     @ManyToOne
-    @JoinColumn(name = "from", nullable = false)
+    @JoinColumn(name = "sender", nullable = false)
     val from: AccountEntity = AccountEntity(),
 
     @ManyToOne
-    @JoinColumn(name = "to", nullable = false)
+    @JoinColumn(name = "recipient", nullable = false)
     val to: ShopEntity = ShopEntity(),
 
     @Column(name = "time", nullable = false)

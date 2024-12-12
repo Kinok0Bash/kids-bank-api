@@ -83,7 +83,7 @@ INSERT INTO "categories_limit" ("category", "child") VALUES
     (6, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');
 
 -- Вставка транзакций
-INSERT INTO "transactions" ("id", "from", "to", "time", "sum") VALUES
+INSERT INTO "transactions" ("id", "sender", "recipient", "time", "sum") VALUES
     ('10101010-1010-1010-1010-101010101010', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '1', '2024-12-08 12:00:00+00', 1000),
     ('20202020-2020-2020-2020-202020202020', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '7', '2024-12-25 13:30:00+00', 500),
     ('30303030-3030-3030-3030-303030303030', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '5', '2024-12-19 14:00:00+00', 1500),

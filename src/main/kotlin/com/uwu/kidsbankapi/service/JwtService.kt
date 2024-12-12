@@ -61,7 +61,7 @@ class JwtService {
             .setSubject(userDetails.username)
             .addClaims(HashMap())
             .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 10))
+            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 30))
             .signWith(getSingInKey(), SignatureAlgorithm.HS256)
             .compact()
 
@@ -76,10 +76,10 @@ class JwtService {
             .compact()
 
     private fun extractAllClaims(token: String): Claims =
-         Jwts
+        Jwts
             .parserBuilder()
             .setSigningKey(getSingInKey())
             .build()
-            .parseClaimsJws(token)!!.body
+            .parseClaimsJws(token.substring(7))!!.body
 
 }
