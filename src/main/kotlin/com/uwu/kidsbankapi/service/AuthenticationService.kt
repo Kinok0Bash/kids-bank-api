@@ -71,7 +71,7 @@ class AuthenticationService(
             login = request.username,
             authPassword = passwordEncoder.encode(request.password),
             lastname = request.lastname,
-            name = request.lastname,
+            name = request.name,
             fatherName = request.fatherName,
             birthDate = request.birthDate,
             city = request.city,
