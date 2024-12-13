@@ -28,6 +28,7 @@ class SecurityConfig(
                     .requestMatchers(
                         "/api/auth/authorization",
                         "/api/auth/registration",
+                        "/api/auth/refresh",
                         "/api/reports/transactions/download",
                         "/api/reports/shops/download",
                         "/api/reports/limits/download",
