@@ -36,7 +36,7 @@ class LimitController(private val limitService: LimitService) {
 
     @ExceptionHandler
     fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
-        logger.error("Ошибка: ${ex.message}")
+        logger.error("Ошибка: ${ex.stackTraceToString()}")
         return ResponseEntity.badRequest().body(mapOf("error" to ex.message.orEmpty()))
     }
 }

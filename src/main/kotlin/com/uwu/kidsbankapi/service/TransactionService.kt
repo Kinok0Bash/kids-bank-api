@@ -6,6 +6,7 @@ import com.uwu.kidsbankapi.dto.response.TransactionResponse
 import com.uwu.kidsbankapi.entity.AccountEntity
 import com.uwu.kidsbankapi.entity.ShopEntity
 import com.uwu.kidsbankapi.entity.TransactionEntity
+import com.uwu.kidsbankapi.enum.Role
 import com.uwu.kidsbankapi.enum.TransactionStatus
 import com.uwu.kidsbankapi.repository.*
 import com.uwu.kidsbankapi.util.convertToTransactionDTO
@@ -26,11 +27,7 @@ class TransactionService(
     private val logger = LoggerFactory.getLogger(TransactionService::class.java)
 
     fun getLastTransactions(token: String): MutableList<Transaction> {
-        val transactionEntities = transactionRepository.findAllByFromOrderByTimeDesc(
-            accountRepository.findAccountEntityByUser(
-                userRepository.findByLogin(jwtService.extractUsername(token)).child!!
-            )
-        )
+        val transactionEntities = getTransactions(token)
         val transactions = mutableListOf<Transaction>()
 
         for (index in 0..<5) {
@@ -42,16 +39,22 @@ class TransactionService(
     }
 
     fun getAllTransactions(token: String): MutableList<Transaction> {
-        val transactionEntities = transactionRepository.findAllByFromOrderByTimeDesc(
-            accountRepository.findAccountEntityByUser(
-                userRepository.findByLogin(jwtService.extractUsername(token)).child!!
-            )
-        )
+        val transactionEntities = getTransactions(token)
         val transactions = mutableListOf<Transaction>()
+
         transactionEntities.forEach { transactionEntity -> transactions.add(transactionEntity.convertToTransactionDTO()) }
 
         logger.info("Список транзакций для пользователя ${jwtService.extractUsername(token)} получен")
         return transactions
+    }
+
+    fun getTransactions(token: String): List<TransactionEntity> {
+        val userEntity = userRepository.findByLogin(jwtService.extractUsername(token))
+        return if (userEntity.role == Role.PARENT && userEntity.child != null) transactionRepository.findAllByFromOrderByTimeDesc(
+                accountRepository.findAccountEntityByUser(userEntity.child!!)
+            ) else if (userEntity.role == Role.CHILD) transactionRepository.findAllByFromOrderByTimeDesc(
+                accountRepository.findAccountEntityByUser(userEntity)
+            ) else throw Exception("У пользователя нет ребенка, либо произошла другая неведомая ошибка")
     }
 
     fun transfer(token: String, sum: Int): TransactionResponse {
@@ -64,9 +67,10 @@ class TransactionService(
 
         val childAccount =
             accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token)).child!!)
-        childAccount.balance += sum
+        childAccount.balance += 2 * sum
+        parentAccount.balance -= sum
 
-        return createTransaction(token, parentAccount, shopRepository.findShopEntityById(0), sum)
+        return createTransaction(token, childAccount, shopRepository.findShopEntityById(0), sum)
     }
 
     fun pay(token: String, request: PayRequest) = createTransaction(

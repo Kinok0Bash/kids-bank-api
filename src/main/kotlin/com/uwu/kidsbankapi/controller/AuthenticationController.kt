@@ -62,7 +62,7 @@ class AuthenticationController(
 
     @ExceptionHandler
     fun handleException(ex: Exception) : ResponseEntity<*> {
-        logger.error("Exception: $ex")
+        logger.error("Ошибка: ${ex.stackTraceToString()}")
         return ResponseEntity.badRequest().body(mapOf("error" to "${ex.message}"))
     }
 
