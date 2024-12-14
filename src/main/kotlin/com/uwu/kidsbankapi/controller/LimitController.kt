@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/limit")
+@CrossOrigin
 @Tag(
     name = "Ограничения",
     description = "Контроллер для управления ограничениями по категориям"
