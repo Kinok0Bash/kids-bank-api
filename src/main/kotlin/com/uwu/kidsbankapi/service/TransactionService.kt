@@ -77,7 +77,7 @@ class TransactionService(
             accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token)))
         if (userRepository.findByLogin(jwtService.extractUsername(token)).child == null || sum > parentAccount.balance) {
             logger.warn("У пользователя нет ребенка, либо не хватает средств на счету")
-            return TransactionResponse(TransactionStatus.FAIL)
+            return TransactionResponse(TransactionStatus.FAIL, -1)
         }
 
         val childAccount =
@@ -90,7 +90,7 @@ class TransactionService(
 
     fun pay(token: String, request: PayRequest): TransactionResponse = if (request.sum <= 0 || request.shopId == 0) {
         logger.warn("Входящий запрос не валиден")
-        TransactionResponse(TransactionStatus.FAIL)
+        TransactionResponse(TransactionStatus.FAIL, -1)
     } else createTransaction(
         token,
         accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token))),
@@ -101,7 +101,7 @@ class TransactionService(
     private fun createTransaction(token: String, from: AccountEntity, to: ShopEntity, sum: Int): TransactionResponse {
         if (sum > from.balance) {
             logger.warn("У пользователя недостаточно средств для совершения транзакции")
-            return TransactionResponse(TransactionStatus.FAIL)
+            return TransactionResponse(TransactionStatus.FAIL, -1)
         }
 
         // Проверка на ограничение
@@ -109,7 +109,7 @@ class TransactionService(
             .forEach { categoryLimitEntity ->
                 if (categoryLimitEntity.category.id == to.category.id) {
                     logger.warn("Данная транзакция запрещена ограничением")
-                    return TransactionResponse(TransactionStatus.FORBIDDEN)
+                    return TransactionResponse(TransactionStatus.FORBIDDEN, -1)
                 }
             }
 
@@ -122,7 +122,7 @@ class TransactionService(
         )
         transactionRepository.save(transaction)
         logger.info("Транзакция прошла успешно")
-        return TransactionResponse(TransactionStatus.OK)
+        return TransactionResponse(TransactionStatus.OK, sum)
     }
 
 }
