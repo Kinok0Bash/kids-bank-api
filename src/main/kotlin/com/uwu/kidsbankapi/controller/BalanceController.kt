@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/balance")
-@CrossOrigin
 @Tag(
     name = "Баланс",
     description = "Контроллер выдающий текущий баланс пользователя"

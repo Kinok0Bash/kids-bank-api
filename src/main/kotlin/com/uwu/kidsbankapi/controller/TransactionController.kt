@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/transaction")
-@CrossOrigin
 @Tag(
     name = "Транзакции",
     description = "Контроллер функционала, связанного с оплатой переводами и прочим"

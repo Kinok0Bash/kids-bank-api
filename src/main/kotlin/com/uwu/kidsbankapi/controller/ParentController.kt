@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/parent")
-@CrossOrigin
 @Tag(
     name = "Функционал родителя",
     description = "Контроллер функционала, связанного с родителем"
