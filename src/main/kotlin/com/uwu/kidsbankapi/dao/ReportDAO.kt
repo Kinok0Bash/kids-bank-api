@@ -28,7 +28,7 @@ class ReportDAO(private val jdbcTemplate: JdbcTemplate) {
                 JOIN
             "shop_categories" ON "shops"."category" = "shop_categories"."id"
         WHERE
-            "users"."role" = 'CHILD'
+            "users"."role" = 'CHILD' OR "users"."role" = '1'
         GROUP BY
             "ФИО ребенка", "transactions"."time","shops"."name", "shop_categories"."name", "transactions"."sum"
         ORDER BY
@@ -49,8 +49,8 @@ class ReportDAO(private val jdbcTemplate: JdbcTemplate) {
                 JOIN
             "users" AS "parent" ON "parent"."child" = child."id"
         WHERE
-            "parent"."role" = 'PARENT'
-          AND "child"."role" = 'CHILD'
+            "parent"."role" = 'PARENT' OR "parent"."role" = '0'
+          AND "child"."role" = 'CHILD' OR "child"."role" = '1'
         GROUP BY
             "ФИО ребенка", "ФИО родителя", "Запрещенная категория"
         ORDER BY
@@ -74,7 +74,7 @@ class ReportDAO(private val jdbcTemplate: JdbcTemplate) {
                 JOIN
             "shop_categories" ON "shops"."category" = "shop_categories"."id"
         WHERE
-            "users"."role" = 'CHILD'
+            "users"."role" = 'CHILD' OR "users"."role" = '1'
         GROUP BY
             "users"."name", "users"."lastname", "shop_categories"."name", "shops"."name"
         ORDER BY
