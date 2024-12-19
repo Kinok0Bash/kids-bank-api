@@ -27,7 +27,7 @@ services:
     depends_on:
       - bank-postgres
     ports:
-      - "8400:8080"
+      - "8080:8080"
 
 networks:
   bank-backend:
