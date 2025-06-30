@@ -6,8 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import java.sql.Date
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 @Entity
@@ -26,7 +25,7 @@ data class TransactionEntity(
     val to: ShopEntity = ShopEntity(),
 
     @Column(name = "time", nullable = false)
-    val time: Date = Date.valueOf(LocalDate.now()),
+    val time: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "sum", nullable = false)
     val sum: Int = 0

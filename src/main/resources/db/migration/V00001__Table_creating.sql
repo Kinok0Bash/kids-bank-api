@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS "transactions" (
     "id" uuid NOT NULL UNIQUE ,
     "sender" uuid NOT NULL ,
     "recipient" int NOT NULL ,
-    "time" timestamp with time zone NOT NULL ,
+    "time" timestamp NOT NULL ,
     "sum" int NOT NULL ,
     PRIMARY KEY ("id"),
     CONSTRAINT "transactions_fk1" FOREIGN KEY ("sender") REFERENCES "accounts"("id"),

@@ -15,8 +15,7 @@ import com.kinoko.kidsbankapi.repository.TransactionRepository
 import com.kinoko.kidsbankapi.repository.UserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.sql.Date
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class TransactionService(
@@ -39,7 +38,7 @@ class TransactionService(
                     name = transactionEntities[index].to.name,
                     category = transactionEntities[index].to.category.name,
                     sum = transactionEntities[index].sum,
-                    date = java.util.Date(transactionEntities[index].time.time)
+                    date = transactionEntities[index].time
                 )
             )
         }
@@ -58,7 +57,7 @@ class TransactionService(
                     name = transactionEntity.to.name,
                     category = transactionEntity.to.category.name,
                     sum = transactionEntity.sum,
-                    date = java.util.Date(transactionEntity.time.time)
+                    date = transactionEntity.time
                 )
             )
         }
@@ -121,7 +120,7 @@ class TransactionService(
         val transaction = TransactionEntity(
             from = from,
             to = to,
-            time = Date.valueOf(LocalDate.now()),
+            time = LocalDateTime.now(),
             sum = sum
         )
         transactionRepository.save(transaction)
