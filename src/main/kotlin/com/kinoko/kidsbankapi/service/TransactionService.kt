@@ -37,6 +37,7 @@ class TransactionService(
                 date = it.time
             )
         }
+            .sortedByDescending { it.date }
 
         logger.info("Список последних пяти для пользователя ${jwtService.extractUsername(token)} получен")
         return transactions
