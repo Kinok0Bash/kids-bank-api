@@ -7,7 +7,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
 }
 
-group = "com.uwu"
+group = "com.kinoko"
 version = "1.0.0"
 
 repositories {
@@ -48,10 +48,21 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
+    // Logging
+    runtimeOnly("io.github.oshai:kotlin-logging-jvm:7.0.7")
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     // Tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+configurations {
+    all {
+        exclude("org.springframework.boot", "spring-boot-starter-logging")
+    }
 }
 
 kotlin {

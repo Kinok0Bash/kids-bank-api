@@ -9,9 +9,9 @@ services:
       POSTGRES_USER: "bank"
       POSTGRES_PASSWORD: "bank"
     volumes:
-      - /var/lib/postgresql/bank:/var/lib/postgresql/data
+      - /home/kinoko/postgresql/bank:/var/lib/postgresql/data
     networks:
-       - bank-backend
+       - backend
     ports:
       - "5800:5432"
 
@@ -23,11 +23,12 @@ services:
     image: bank
     container_name: bank
     networks:
-      - bank-backend
+      - backend
     depends_on:
       - bank-postgres
     ports:
-      - "8080:8080"
+      - "3567:3567"
 
 networks:
   bank-backend:
+    external: true
