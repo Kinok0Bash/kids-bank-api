@@ -28,18 +28,13 @@ class TransactionService(
 ) {
     private val logger = LoggerFactory.getLogger(TransactionService::class.java)
 
-    fun getLastTransactions(token: String): MutableList<Transaction> {
-        val transactionEntities = getTransactions(token)
-        val transactions = mutableListOf<Transaction>()
-
-        for (index in 0..<5) {
-            transactions.add(
-                Transaction(
-                    name = transactionEntities[index].to.name,
-                    category = transactionEntities[index].to.category.name,
-                    sum = transactionEntities[index].sum,
-                    date = transactionEntities[index].time
-                )
+    fun getLastTransactions(token: String): List<Transaction> {
+        val transactions = getTransactions(token).map {
+            Transaction(
+                name = it.to.name,
+                category = it.to.category.name,
+                sum = it.sum,
+                date = it.time
             )
         }
 
