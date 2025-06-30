@@ -29,7 +29,7 @@ class TransactionController(private val transactionService: TransactionService) 
 
     @GetMapping("/last")
     @Operation(summary = "Получение последних 5 транзакций чтобы вынести на главную страницу")
-    fun getLastTransactions(@RequestHeader(name = "Authorization") token: String): ResponseEntity<MutableList<Transaction>> {
+    fun getLastTransactions(@RequestHeader(name = "Authorization") token: String): ResponseEntity<List<Transaction>> {
         logger.info("Запрос на получение последних 5 транзакций")
         return ResponseEntity.ok(transactionService.getLastTransactions(token))
     }
