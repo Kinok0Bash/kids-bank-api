@@ -1,7 +1,7 @@
 services:
-  bank-postgres:
+  bank-db:
     image: postgres:16.3
-    container_name: bank-postgres
+    container_name: bank-db
     hostname: db
     restart: always
     environment:
@@ -22,13 +22,15 @@ services:
     restart: always
     image: bank
     container_name: bank
+    volumes:
+      - /home/kinoko/logs/bank-api:/logs
     networks:
       - backend
     depends_on:
-      - bank-postgres
+      - bank-db
     ports:
       - "3567:3567"
 
 networks:
-  bank-backend:
+  backend:
     external: true
