@@ -23,7 +23,7 @@ services:
     image: bank
     container_name: bank
     volumes:
-      - /home/kinoko/logs:/logs
+      - /home/kinoko/logs/bank-api:/logs
     networks:
       - backend
     depends_on:
