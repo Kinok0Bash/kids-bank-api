@@ -6,8 +6,9 @@ import com.kinoko.kidsbankapi.dto.response.TransactionResponse
 import com.kinoko.kidsbankapi.entity.AccountEntity
 import com.kinoko.kidsbankapi.entity.ShopEntity
 import com.kinoko.kidsbankapi.entity.TransactionEntity
-import com.kinoko.kidsbankapi.enum.Role
-import com.kinoko.kidsbankapi.enum.TransactionStatus
+import com.kinoko.kidsbankapi.enums.Role
+import com.kinoko.kidsbankapi.enums.TransactionStatus
+import com.kinoko.kidsbankapi.exception.UserNotFoundException
 import com.kinoko.kidsbankapi.repository.AccountRepository
 import com.kinoko.kidsbankapi.repository.CategoryLimitRepository
 import com.kinoko.kidsbankapi.repository.ShopRepository
@@ -39,7 +40,7 @@ class TransactionService(
         }
             .sortedByDescending { it.date }
 
-        logger.info("Список последних пяти для пользователя ${jwtService.extractUsername(token)} получен")
+        logger.info("Список последних пяти для пользователя ${jwtService.getLogin(token)} получен")
         return transactions
     }
 
@@ -58,12 +59,13 @@ class TransactionService(
             )
         }
 
-        logger.info("Список транзакций для пользователя ${jwtService.extractUsername(token)} получен")
+        logger.info("Список транзакций для пользователя ${jwtService.getLogin(token)} получен")
         return transactions
     }
 
     fun getTransactions(token: String): List<TransactionEntity> {
-        val userEntity = userRepository.findByLogin(jwtService.extractUsername(token))
+        val userEntity = userRepository.findByLogin(jwtService.getLogin(token))
+            ?: throw UserNotFoundException("Пользователь не найден")
         return if (userEntity.role == Role.PARENT && userEntity.child != null) transactionRepository.findAllByFromOrderByTimeDesc(
             accountRepository.findAccountEntityByUser(userEntity.child!!)
         ) else if (userEntity.role == Role.CHILD) transactionRepository.findAllByFromOrderByTimeDesc(
@@ -72,15 +74,17 @@ class TransactionService(
     }
 
     fun transfer(token: String, sum: Int): TransactionResponse {
+        val user = userRepository.findByLogin(jwtService.getLogin(token))
+            ?: throw UserNotFoundException("Пользователь не найден")
         val parentAccount =
-            accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token)))
-        if (userRepository.findByLogin(jwtService.extractUsername(token)).child == null || sum > parentAccount.balance) {
+            accountRepository.findAccountEntityByUser(user)
+        if (user.child == null || sum > parentAccount.balance) {
             logger.warn("У пользователя нет ребенка, либо не хватает средств на счету")
             return TransactionResponse(TransactionStatus.FAIL, -1)
         }
 
-        val childAccount =
-            accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token)).child!!)
+        val child = user.child ?: throw UserNotFoundException("У пользователя нет ребенка")
+        val childAccount = accountRepository.findAccountEntityByUser(child)
         childAccount.balance += 2 * sum
         parentAccount.balance -= sum
 
@@ -90,12 +94,17 @@ class TransactionService(
     fun pay(token: String, request: PayRequest): TransactionResponse = if (request.sum <= 0 || request.shopId == 0) {
         logger.warn("Входящий запрос не валиден")
         TransactionResponse(TransactionStatus.FAIL, -1)
-    } else createTransaction(
-        token,
-        accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token))),
-        shopRepository.findShopEntityById(request.shopId),
-        request.sum
-    )
+    } else {
+        val user = userRepository.findByLogin(jwtService.getLogin(token))
+            ?: throw UserNotFoundException("Пользователь не найден")
+
+        createTransaction(
+            token,
+            accountRepository.findAccountEntityByUser(user),
+            shopRepository.findShopEntityById(request.shopId),
+            request.sum
+        )
+    }
 
     private fun createTransaction(token: String, from: AccountEntity, to: ShopEntity, sum: Int): TransactionResponse {
         if (sum > from.balance) {
@@ -104,7 +113,10 @@ class TransactionService(
         }
 
         // Проверка на ограничение
-        categoryLimitRepository.findAllByChild(userRepository.findByLogin(jwtService.extractUsername(token)))
+        val user = userRepository.findByLogin(jwtService.getLogin(token))
+            ?: throw UserNotFoundException("Пользователь не найден")
+
+        categoryLimitRepository.findAllByChild(user)
             .forEach { categoryLimitEntity ->
                 if (categoryLimitEntity.category.id == to.category.id) {
                     logger.warn("Данная транзакция запрещена ограничением")

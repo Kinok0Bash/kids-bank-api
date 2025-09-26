@@ -8,7 +8,9 @@ plugins {
 }
 
 group = "com.kinoko"
-version = "1.0.0"
+version = "1.1.0"
+
+val jwtVersion = "0.12.6"
 
 repositories {
     mavenLocal()
@@ -44,9 +46,9 @@ dependencies {
 
     // JWT
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
 
     // Logging
     runtimeOnly("io.github.oshai:kotlin-logging-jvm:7.0.7")

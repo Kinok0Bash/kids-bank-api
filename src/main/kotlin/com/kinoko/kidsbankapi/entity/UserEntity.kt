@@ -1,6 +1,6 @@
 package com.kinoko.kidsbankapi.entity
 
-import com.kinoko.kidsbankapi.enum.Role
+import com.kinoko.kidsbankapi.enums.Role
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

@@ -4,10 +4,12 @@ import com.kinoko.kidsbankapi.dto.User
 import com.kinoko.kidsbankapi.dto.request.RegistrationRequest
 import com.kinoko.kidsbankapi.entity.AccountEntity
 import com.kinoko.kidsbankapi.entity.UserEntity
-import com.kinoko.kidsbankapi.enum.Role
+import com.kinoko.kidsbankapi.enums.Role
+import com.kinoko.kidsbankapi.exception.AuthenticationException
+import com.kinoko.kidsbankapi.exception.UserNotFoundException
 import com.kinoko.kidsbankapi.repository.AccountRepository
 import com.kinoko.kidsbankapi.repository.UserRepository
-import com.kinoko.kidsbankapi.util.convertToUserDTO
+import com.kinoko.kidsbankapi.util.toUserDTO
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -27,13 +29,9 @@ class ParentService(
             throw Exception("Заполнены не все данные")
         }
 
-        val usernames = userRepository.findAllUsernames()
-
-        usernames.forEach { username ->
-            if (request.username == username) {
-                logger.error("Ошибка при регистрации: Пользователь с username ${request.username} уже существует")
-                throw Exception("Пользователь с таким username уже существует")
-            }
+        if (userRepository.findByLogin(request.username) != null) {
+            logger.warn("Registration error: User with ${request.username} is success")
+            throw AuthenticationException("Пользователь с таким логином уже существует")
         }
 
         val child = UserEntity (
@@ -49,7 +47,9 @@ class ParentService(
         )
         userRepository.save(child)
 
-        val parent = userRepository.findByLogin(jwtService.extractUsername(token))
+        val parent = userRepository.findByLogin(jwtService.getLogin(token))
+            ?: throw UserNotFoundException("Пользователь не найден")
+
         parent.child = child
         userRepository.save(parent)
 
@@ -58,13 +58,13 @@ class ParentService(
         logger.debug("Ребенок с username ${child.login} был создан")
         logger.info("Регистрация ребенка прошла успешно!")
 
-        return child.convertToUserDTO()
+        return child.toUserDTO()
     }
 
     fun getSalary(token: String) {
-        val account = accountRepository.findAccountEntityByUser(
-            userRepository.findByLogin(jwtService.extractUsername(token))
-        )
+        val user = userRepository.findByLogin(jwtService.getLogin(token))
+            ?: throw UserNotFoundException("Пользователь не найден")
+        val account = accountRepository.findAccountEntityByUser(user)
 
         account.balance += 20000
         accountRepository.save(account)

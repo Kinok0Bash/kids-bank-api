@@ -3,6 +3,7 @@ package com.kinoko.kidsbankapi.service
 import com.kinoko.kidsbankapi.dto.response.ChildBalanceResponse
 import com.kinoko.kidsbankapi.dto.response.ParentBalanceResponse
 import com.kinoko.kidsbankapi.entity.UserEntity
+import com.kinoko.kidsbankapi.exception.UserNotFoundException
 import com.kinoko.kidsbankapi.repository.AccountRepository
 import com.kinoko.kidsbankapi.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -15,9 +16,14 @@ class BalanceService(
 ) {
 
     fun getParentAccountBalance(token: String): ParentBalanceResponse {
-        val user = userRepository.findByLogin(jwtService.extractUsername(token))
-        return  if (user.child != null) getParentAccountBalanceWithChild(user)
-        else getParentAccountBalanceWithOutChild(user)
+        val user = userRepository.findByLogin(jwtService.getLogin(token))
+            ?: throw UserNotFoundException("Пользователь не найден")
+
+        return if (user.child != null) {
+            getParentAccountBalanceWithChild(user)
+        } else {
+            getParentAccountBalanceWithOutChild(user)
+        }
     }
 
     fun getParentAccountBalanceWithChild(user: UserEntity) = ParentBalanceResponse(
@@ -31,7 +37,10 @@ class BalanceService(
     )
 
     fun getChildAccountBalance(token: String) = ChildBalanceResponse(
-        balance = accountRepository.findAccountEntityByUser(userRepository.findByLogin(jwtService.extractUsername(token))).balance
+        balance = accountRepository.findAccountEntityByUser(
+            userRepository.findByLogin(jwtService.getLogin(token))
+                ?: throw UserNotFoundException("Пользователь не найден")
+        ).balance
     )
 
 }

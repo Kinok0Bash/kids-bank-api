@@ -15,9 +15,11 @@ spring:
     password: bank
     driver-class-name: org.postgresql.Driver
 
-token:
-  secret:
-    key: cf1865657815ab5bfeb6305237a776a5a3390e083c78779c722bcd3ccf679cdda2f1e3e8d93e56842c55fcfccb5bd7bb41424dc3f8d0d9c984eadb9ececb1562
+app:
+  auth:
+    secret: a45933b42fc4f16f67902829ab2c259205f3080e672c1695beee0f68b915c579fedc4b37737062bd
+    access-life-time: 900000
+    refresh-life-time: 2592000000
 
 server:
   port: 3567

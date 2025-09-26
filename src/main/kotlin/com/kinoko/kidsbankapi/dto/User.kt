@@ -1,6 +1,6 @@
 package com.kinoko.kidsbankapi.dto
 
-import com.kinoko.kidsbankapi.enum.Role
+import com.kinoko.kidsbankapi.enums.Role
 import java.time.LocalDate
 import java.util.*
 

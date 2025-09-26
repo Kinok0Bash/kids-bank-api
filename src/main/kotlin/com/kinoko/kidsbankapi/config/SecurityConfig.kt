@@ -21,9 +21,12 @@ class SecurityConfig(
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.cors {  }
+        http.cors { }
             .csrf { it.disable() }
-            .addFilterBefore(JwtAuthenticationFilter(userDetailsService, jwtService), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(
+                JwtAuthenticationFilter(userDetailsService, jwtService),
+                UsernamePasswordAuthenticationFilter::class.java,
+            )
             .authorizeHttpRequests { authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry
                     .requestMatchers(

@@ -1,7 +1,6 @@
 package com.kinoko.kidsbankapi.config
 
 import com.kinoko.kidsbankapi.service.JwtService
-import com.kinoko.kidsbankapi.util.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class JwtAuthenticationFilter (
+class JwtAuthenticationFilter(
     private val userDetailsService: UserDetailsService,
     private val jwtService: JwtService
 ) : OncePerRequestFilter() {
@@ -21,33 +20,56 @@ class JwtAuthenticationFilter (
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         try {
-            val authHeader = request.getHeader("Authorization")
-            if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer ")) {
+            if (request.requestURI.startsWith("/api/auth") && request.requestURI != "/api/auth/who-am-i") {
                 filterChain.doFilter(request, response)
                 return
             }
 
-            val userEmail = jwtService.extractUsername(authHeader)
+            val authHeader = request.getHeader("Authorization")
 
-            if (userEmail.isNotEmpty() && SecurityContextHolder.getContext().authentication == null) {
-                val userDetails = this.userDetailsService.loadUserByUsername(userEmail)
+            if (authHeader == null || authHeader.isEmpty()) {
+                filterChain.doFilter(request, response)
+                return
+            }
 
-                if (jwtService.isTokenValid(authHeader, userDetails)) {
-                    val authToken = UsernamePasswordAuthenticationToken(userEmail, null, userDetails.authorities)
+            if (!authHeader.startsWith("Bearer ")) return
+
+            val token = authHeader.substring(7)
+            val userPhoneNumber = jwtService.getLogin(token)
+
+            if (userPhoneNumber.isNotEmpty() && SecurityContextHolder.getContext().authentication == null) {
+                val userDetails = userDetailsService.loadUserByUsername(userPhoneNumber)
+
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    val authToken = UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        token,
+                        userDetails.authorities
+                    )
+
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                     SecurityContextHolder.getContext().authentication = authToken
-                } else throw JwtException()
+                } else return
             }
 
             filterChain.doFilter(request, response)
-        } catch (ex: JwtException) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Срок действия токена истек")
-            logger.warn("Срок действия токена истек")
-            return
+        } catch (ex: Exception) {
+            logger.warn("Token validation ended with exception: ${ex.message}")
+            response.status = HttpServletResponse.SC_UNAUTHORIZED
+            response.contentType = "application/json"
+            response.writer.write(
+                """
+            {
+                "status": 401,
+                "error": "Unauthorized",
+                "message": "Токен не валиден",
+                "path": "${request.requestURI}"
+            }
+                """.trimIndent()
+            )
         }
     }
-
 }

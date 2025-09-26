@@ -5,9 +5,9 @@ import com.kinoko.kidsbankapi.dto.User
 import com.kinoko.kidsbankapi.entity.CategoryLimitEntity
 import com.kinoko.kidsbankapi.entity.ShopCategoryEntity
 import com.kinoko.kidsbankapi.entity.UserEntity
-import com.kinoko.kidsbankapi.enum.Role
+import com.kinoko.kidsbankapi.enums.Role
 
-fun UserEntity.convertToUserDTO(): User {
+fun UserEntity.toUserDTO(): User {
     val isGetChild = (this.role == Role.PARENT && this.child != null)
     return User(
         id = this.id,
@@ -23,13 +23,13 @@ fun UserEntity.convertToUserDTO(): User {
     )
 }
 
-fun ShopCategoryEntity.convertToLimitDTO() = Limit(
+fun ShopCategoryEntity.toLimitDTO() = Limit(
     id = this.id,
     name = this.name,
     isLimit = false
 )
 
-fun Limit.convertToCategoryLimitEntity(child: UserEntity) = CategoryLimitEntity(
+fun Limit.toCategoryLimitEntity(child: UserEntity) = CategoryLimitEntity(
     category = ShopCategoryEntity(this.id, this.name),
     child = child
 )

@@ -1,12 +1,12 @@
 Configuration:
   status: warn
-  name: cib-app-logger
+  name: app-logger
   Properties:
     Property:
       - name: app-name
-        value: "kros-service"
+        value: "kids-banking-api"
       - name: log-path
-        value: "logs/kros-service"
+        value: "logs/kids-banking-api"
       - name: log-archive-path
         value: ${log-path}/archive
       - name: log-file-pattern

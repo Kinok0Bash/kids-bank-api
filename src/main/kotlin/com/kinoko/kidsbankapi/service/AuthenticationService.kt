@@ -6,10 +6,12 @@ import com.kinoko.kidsbankapi.dto.request.RegistrationRequest
 import com.kinoko.kidsbankapi.dto.response.AuthenticationResponse
 import com.kinoko.kidsbankapi.entity.AccountEntity
 import com.kinoko.kidsbankapi.entity.UserEntity
-import com.kinoko.kidsbankapi.enum.Role
+import com.kinoko.kidsbankapi.enums.Role
+import com.kinoko.kidsbankapi.exception.AuthenticationException
+import com.kinoko.kidsbankapi.exception.UserNotFoundException
 import com.kinoko.kidsbankapi.repository.AccountRepository
 import com.kinoko.kidsbankapi.repository.UserRepository
-import com.kinoko.kidsbankapi.util.convertToUserDTO
+import com.kinoko.kidsbankapi.util.toUserDTO
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
@@ -37,34 +39,39 @@ class AuthenticationService(
     fun authorization(request: AuthenticationRequest, response: HttpServletResponse): AuthenticationResponse {
         if (!isValidCredentials(request)) {
             logger.error("Login and/or password is empty")
-            throw Exception("Поля логин и/или пароль пустые")
+            throw AuthenticationException("Поля логин и/или пароль пустые")
         }
-        authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.login, request.password))
-        val user = userRepository.findByLogin(request.login)
+
+        authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(
+                request.login,
+                request.password
+            )
+        )
+
+        val user = userRepository.findByLogin(request.login) ?: throw UserNotFoundException(
+            "Пользователь не найден"
+        )
+
+        val (accessToken, refreshToken) = jwtService.generateTokens(user)
+        setRefreshToken(response, refreshToken)
+
         logger.debug("User ${user.login} is authorized")
         logger.info("Authorization is successful!")
 
-        val tokens = jwtService.generateTokens(user)
-
-        setRefreshToken(response, tokens[1])
-
-        return AuthenticationResponse(tokens[0], user.convertToUserDTO())
+        return AuthenticationResponse(accessToken, user.toUserDTO())
     }
 
     @Transactional
     fun registration(request: RegistrationRequest, response: HttpServletResponse): AuthenticationResponse {
         if (!isValidCredentials(request)) {
             logger.error("Заполнены не все данные")
-            throw Exception("Заполнены не все данные")
+            throw AuthenticationException("Заполнены не все данные")
         }
 
-        val usernames = userRepository.findAllUsernames()
-
-        usernames.forEach { username ->
-            if (request.username == username) {
-                logger.error("Ошибка регистрации: Пользователь с username ${request.username} уже существует")
-                throw Exception("Пользователь с таким username уже существует")
-            }
+        if (userRepository.findByLogin(request.username) != null) {
+            logger.warn("Registration error: User with ${request.username} is success")
+            throw AuthenticationException("Пользователь с таким логином уже существует")
         }
 
         val user = UserEntity (
@@ -78,22 +85,22 @@ class AuthenticationService(
             role = Role.PARENT,
             child = null
         )
-        val tokens = jwtService.generateTokens(user)
+        val (accessToken, refreshToken) = jwtService.generateTokens(user)
 
         userRepository.save(user)
 
         val userAccount = AccountEntity(user = user, balance = 0)
         accountRepository.save(userAccount)
 
-        setRefreshToken(response, tokens[1])
+        setRefreshToken(response, refreshToken)
 
         logger.debug("Пользователь с username ${user.login} был создан")
         logger.info("Регистрация прошла успешно")
 
-        return AuthenticationResponse(tokens[0], user.convertToUserDTO())
+        return AuthenticationResponse(accessToken, user.toUserDTO())
     }
 
-    fun logout(token: String, response: HttpServletResponse): Map<String, String> {
+    fun logout(response: HttpServletResponse): Map<String, String> {
         val cookie = Cookie("refreshToken", null)
         cookie.maxAge = 0
         cookie.path = "/"
@@ -106,22 +113,27 @@ class AuthenticationService(
     fun refresh(userToken: String, response: HttpServletResponse): AuthenticationResponse {
         if (userToken.isEmpty()) {
             logger.error("Токен пуст")
-            throw Exception("Токен пуст")
+            throw AuthenticationException("Токен пуст")
         }
 
-        val user = userRepository.findByLogin(jwtService.extractUsername(userToken))
-        val tokens = jwtService.generateTokens(user)
+        val user = userRepository.findByLogin(jwtService.getLogin(userToken))
+            ?: throw UserNotFoundException("Пользователь не найден")
 
-        setRefreshToken(response, tokens[1])
+        val (accessToken, refreshToken) = jwtService.generateTokens(user)
+
+        setRefreshToken(response, refreshToken)
 
         logger.debug("Токен пользователя ${user.login} обновлен")
 
-        return AuthenticationResponse(tokens[0], user.convertToUserDTO())
+        return AuthenticationResponse(accessToken, user.toUserDTO())
     }
 
     fun whoAmI(token: String): User {
-        val userEntity = userRepository.findByLogin(jwtService.extractUsername(token.substring(7)))
-        val user = userEntity.convertToUserDTO()
+        val userEntity = userRepository.findByLogin(
+            jwtService.getLogin(token.substring(7))
+        ) ?: throw UserNotFoundException("Пользователь не найден")
+
+        val user = userEntity.toUserDTO()
         logger.info("WhoAmI для пользователя ${user.username} был возвращен")
         return user
     }

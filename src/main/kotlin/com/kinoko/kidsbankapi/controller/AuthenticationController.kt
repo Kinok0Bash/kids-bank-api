@@ -33,29 +33,40 @@ class AuthenticationController(
 
     @PostMapping("/authorization")
     @Operation(summary = "Авторизация пользователя")
-    fun authorization(@RequestBody request: AuthenticationRequest, response: HttpServletResponse): ResponseEntity<AuthenticationResponse> {
+    fun authorization(
+        @RequestBody request: AuthenticationRequest,
+        response: HttpServletResponse
+    ): ResponseEntity<AuthenticationResponse> {
         logger.info("Запрос на авторизацию")
         return ResponseEntity.ok(authenticationService.authorization(request, response))
     }
 
     @PostMapping("/registration")
     @Operation(summary = "Регистрация пользователя")
-    fun registration(@RequestBody request: RegistrationRequest, response: HttpServletResponse): ResponseEntity<AuthenticationResponse> {
+    fun registration(
+        @RequestBody request: RegistrationRequest,
+        response: HttpServletResponse
+    ): ResponseEntity<AuthenticationResponse> {
         logger.info("Запрос на регистрацию")
         return ResponseEntity.ok(authenticationService.registration(request, response))
     }
 
     @PostMapping("/logout")
     @Operation(summary = "Выход пользователя с сайта")
-    fun logout(@CookieValue(value = "refreshToken") token: String,
-               response: HttpServletResponse): ResponseEntity<Map<String, String>> {
+    fun logout(
+        @CookieValue(value = "refreshToken") token: String,
+        response: HttpServletResponse
+    ): ResponseEntity<Map<String, String>> {
         logger.info("Запрос на выход из аккаунта")
-        return ResponseEntity.ok(authenticationService.logout(token, response))
+        return ResponseEntity.ok(authenticationService.logout(response))
     }
 
     @GetMapping("/refresh")
     @Operation(summary = "Обновление токена")
-    fun refresh(@CookieValue(value = "refreshToken") token: String, response: HttpServletResponse): ResponseEntity<AuthenticationResponse> {
+    fun refresh(
+        @CookieValue(value = "refreshToken") token: String,
+        response: HttpServletResponse
+    ): ResponseEntity<AuthenticationResponse> {
         logger.info("Запрос на обновление токена")
         return ResponseEntity.ok(authenticationService.refresh(token, response))
     }
@@ -68,9 +79,8 @@ class AuthenticationController(
     }
 
     @ExceptionHandler
-    fun handleException(ex: Exception) : ResponseEntity<*> {
+    fun handleException(ex: Exception): ResponseEntity<*> {
         logger.error("Ошибка: ${ex.stackTraceToString()}")
         return ResponseEntity.badRequest().body(mapOf("error" to "${ex.message}"))
     }
-
 }

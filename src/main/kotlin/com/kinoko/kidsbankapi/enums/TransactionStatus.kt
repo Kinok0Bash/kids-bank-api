@@ -1,4 +1,4 @@
-package com.kinoko.kidsbankapi.enum
+package com.kinoko.kidsbankapi.enums
 
 enum class TransactionStatus {
     OK,
