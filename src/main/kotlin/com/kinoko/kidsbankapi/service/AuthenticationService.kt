@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
+import org.springframework.security.core.AuthenticationException as SpringAuthenticationException
 
 @Service
 class AuthenticationService(
@@ -42,12 +43,16 @@ class AuthenticationService(
             throw AuthenticationException("Поля логин и/или пароль пустые")
         }
 
-        authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                request.login,
-                request.password
+        try {
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(
+                    request.login,
+                    request.password
+                )
             )
-        )
+        } catch (_: SpringAuthenticationException) {
+            throw AuthenticationException("Неверные логин или пароль")
+        }
 
         val user = userRepository.findByLogin(request.login) ?: throw UserNotFoundException(
             "Пользователь не найден"

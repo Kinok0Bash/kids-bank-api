@@ -20,7 +20,7 @@ class ApplicationConfig (
     fun userDetailsService(): UserDetailsService? {
         return UserDetailsService { login: String ->
             userRepository.findByLogin(login)
-                ?: throw UserNotFoundException("Неверный логин и/или пароль")
+                ?: throw UserNotFoundException("Неверные логин или пароль")
         }
     }
 
