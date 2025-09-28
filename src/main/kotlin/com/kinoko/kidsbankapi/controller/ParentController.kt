@@ -6,6 +6,7 @@ import com.kinoko.kidsbankapi.service.ParentService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -27,7 +28,7 @@ class ParentController(private val parentService: ParentService) {
     @Operation(summary = "Регистрация детского аккаунта")
     fun createChildAccount(
         @RequestBody request: RegistrationRequest,
-        @RequestHeader(name = "Authorization") token: String
+        @RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String
     ): ResponseEntity<User> {
         logger.info("Запрос на регистрацию детского аккаунта")
         return ResponseEntity.ok(parentService.createChildAccount(request, token))
@@ -35,7 +36,7 @@ class ParentController(private val parentService: ParentService) {
 
     @PutMapping("/salary")
     @Operation(summary = "Получить зарплату пользователю")
-    fun getSalary(@RequestHeader(name = "Authorization") token: String): ResponseEntity<Map<String, String>> {
+    fun getSalary(@RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String): ResponseEntity<Map<String, String>> {
         logger.info("Запрос на получение зарплаты")
         parentService.getSalary(token)
         return ResponseEntity.ok(mapOf("message" to "OK"))

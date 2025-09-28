@@ -8,6 +8,7 @@ import com.kinoko.kidsbankapi.service.TransactionService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -28,14 +29,14 @@ class TransactionController(private val transactionService: TransactionService) 
 
     @GetMapping("/last")
     @Operation(summary = "Получение последних 5 транзакций чтобы вынести на главную страницу")
-    fun getLastTransactions(@RequestHeader(name = "Authorization") token: String): ResponseEntity<List<Transaction>> {
+    fun getLastTransactions(@RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String): ResponseEntity<List<Transaction>> {
         logger.info("Запрос на получение последних 5 транзакций")
         return ResponseEntity.ok(transactionService.getLastTransactions(token))
     }
 
     @GetMapping("/history")
     @Operation(summary = "Получение истории транзакций")
-    fun getAllTransactions(@RequestHeader(name = "Authorization") token: String): ResponseEntity<MutableList<Transaction>> {
+    fun getAllTransactions(@RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String): ResponseEntity<MutableList<Transaction>> {
         logger.info("Запрос на получение всех транзакций")
         return ResponseEntity.ok(transactionService.getAllTransactions(token))
     }
@@ -43,7 +44,7 @@ class TransactionController(private val transactionService: TransactionService) 
     @PutMapping("/transfer")
     @Operation(summary = "Перевод родителя своему ребенку")
     fun transfer(
-        @RequestHeader(name = "Authorization") token: String,
+        @RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String,
         @RequestBody request: TransferRequest
     ): ResponseEntity<TransactionResponse> {
         logger.info("Запрос на перевод ребенку ${request.sum} рубль(ей)")
@@ -53,7 +54,7 @@ class TransactionController(private val transactionService: TransactionService) 
     @PostMapping("/pay")
     @Operation(summary = "Оплата")
     fun pay(
-        @RequestHeader(name = "Authorization") token: String,
+        @RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String,
         @RequestBody request: PayRequest
     ): ResponseEntity<TransactionResponse> {
         logger.info("Запрос на оплату счета от ${request.shopId} на ${request.sum}")

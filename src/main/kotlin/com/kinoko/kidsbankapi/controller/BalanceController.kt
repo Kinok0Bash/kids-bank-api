@@ -6,6 +6,7 @@ import com.kinoko.kidsbankapi.service.BalanceService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,14 +23,14 @@ class BalanceController(private val balanceService: BalanceService) {
 
     @GetMapping("/parent")
     @Operation(summary = "Метод на получение баланса родителя и его ребенка")
-    fun getParentBalance(@RequestHeader(name = "Authorization") token: String): ParentBalanceResponse {
+    fun getParentBalance(@RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String): ParentBalanceResponse {
         logger.info("Запрос на метод получения баланса родителя и его ребенка")
         return balanceService.getParentAccountBalance(token)
     }
 
     @GetMapping("/child")
     @Operation(summary = "Метод на получение баланса ребенка")
-    fun getChildBalance(@RequestHeader(name = "Authorization") token: String): ChildBalanceResponse {
+    fun getChildBalance(@RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String): ChildBalanceResponse {
         logger.info("Запрос на метод получения баланса ребенка")
         return balanceService.getChildAccountBalance(token)
     }

@@ -4,6 +4,8 @@ import com.kinoko.kidsbankapi.service.JwtService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -16,6 +18,7 @@ class JwtAuthenticationFilter(
     private val userDetailsService: UserDetailsService,
     private val jwtService: JwtService
 ) : OncePerRequestFilter() {
+    private val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -28,7 +31,8 @@ class JwtAuthenticationFilter(
                 return
             }
 
-            val authHeader = request.getHeader("Authorization")
+            val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
+            logger.debug("authHeader = $authHeader")
 
             if (authHeader == null || authHeader.isEmpty()) {
                 filterChain.doFilter(request, response)
@@ -60,7 +64,8 @@ class JwtAuthenticationFilter(
             logger.warn("Token validation ended with exception: ${ex.message}")
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.contentType = "application/json"
-            response.writer.write("""
+            response.writer.write(
+                """
             {
                 "status": 401,
                 "error": "Unauthorized",

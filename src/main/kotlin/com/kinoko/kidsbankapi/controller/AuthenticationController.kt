@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CookieValue
 import org.springframework.web.bind.annotation.GetMapping
@@ -72,7 +73,7 @@ class AuthenticationController(
 
     @GetMapping("/who-am-i")
     @Operation(description = "Информация об аутентифицированном пользователе")
-    fun whoAmI(@RequestHeader(value = "Authorization") token: String): ResponseEntity<User> {
+    fun whoAmI(@RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String): ResponseEntity<User> {
         logger.info("Запрос на WhoAmI")
         return ResponseEntity.ok().body(authenticationService.whoAmI(token))
     }
