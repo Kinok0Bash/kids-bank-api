@@ -60,15 +60,14 @@ class JwtAuthenticationFilter(
             logger.warn("Token validation ended with exception: ${ex.message}")
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.contentType = "application/json"
-            response.writer.write(
-                """
+            response.writer.write("""
             {
                 "status": 401,
                 "error": "Unauthorized",
                 "message": "Токен не валиден",
                 "path": "${request.requestURI}"
             }
-                """.trimIndent()
+            """.trimIndent()
             )
         }
     }

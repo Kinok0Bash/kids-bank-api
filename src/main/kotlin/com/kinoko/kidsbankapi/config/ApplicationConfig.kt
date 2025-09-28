@@ -1,5 +1,6 @@
 package com.kinoko.kidsbankapi.config
 
+import com.kinoko.kidsbankapi.exception.UserNotFoundException
 import com.kinoko.kidsbankapi.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,8 +18,9 @@ class ApplicationConfig (
 
     @Bean
     fun userDetailsService(): UserDetailsService? {
-        return UserDetailsService { email: String ->
-            userRepository.findByLogin(email)
+        return UserDetailsService { login: String ->
+            userRepository.findByLogin(login)
+                ?: throw UserNotFoundException("Пользователь с таким логином не найден")
         }
     }
 

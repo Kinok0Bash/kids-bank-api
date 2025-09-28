@@ -70,7 +70,7 @@ class AuthenticationService(
         }
 
         if (userRepository.findByLogin(request.username) != null) {
-            logger.warn("Registration error: User with ${request.username} is success")
+            logger.warn("Registration error: User with ${request.username} already exist")
             throw AuthenticationException("Пользователь с таким логином уже существует")
         }
 
