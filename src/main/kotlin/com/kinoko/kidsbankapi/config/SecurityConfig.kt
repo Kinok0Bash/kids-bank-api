@@ -33,6 +33,7 @@ class SecurityConfig(
                         "/api/auth/authorization",
                         "/api/auth/registration",
                         "/api/auth/refresh",
+                        "/api/auth/logout",
                         "/swagger-ui/*",
                         "/v3/api-docs",
                         "/v3/api-docs/*"
