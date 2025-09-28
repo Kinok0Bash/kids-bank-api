@@ -139,7 +139,7 @@ class AuthenticationService(
     }
 
     private fun setRefreshToken(response: HttpServletResponse, token: String) {
-        val cookie = ResponseCookie.from("refreshToken", "Bearer_$token")
+        val cookie = ResponseCookie.from("refreshToken",  token)
             .httpOnly(true)
             .secure(true)
             .path("/")
