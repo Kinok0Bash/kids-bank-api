@@ -9,13 +9,16 @@ import org.springframework.stereotype.Component
 
 @Component
 class CustomAuthenticationEntryPoint : AuthenticationEntryPoint {
-    val logger = LoggerFactory.getLogger(CustomAuthenticationEntryPoint::class.java)
+    private val logger = LoggerFactory.getLogger(CustomAuthenticationEntryPoint::class.java)
 
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,
         authException: AuthenticationException
     ) {
+        logger.debug("Request: {}", request)
+        logger.debug(authException.stackTraceToString())
+
         response.status = HttpServletResponse.SC_UNAUTHORIZED
         response.contentType = "application/json"
         response.writer.write("""

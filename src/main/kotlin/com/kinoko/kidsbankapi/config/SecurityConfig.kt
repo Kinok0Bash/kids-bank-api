@@ -42,6 +42,7 @@ class SecurityConfig(
                     .authenticated()
             }
             .exceptionHandling { exceptionHandlingConfigurer ->
+
                 exceptionHandlingConfigurer
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             }
