@@ -2,6 +2,7 @@ package com.kinoko.kidsbankapi.controller.advice
 
 import com.kinoko.kidsbankapi.dto.response.ErrorResponse
 import com.kinoko.kidsbankapi.exception.AuthenticationException
+import com.kinoko.kidsbankapi.exception.UserNotFoundException
 import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -38,11 +39,23 @@ class GlobalExceptionHandler {
         )
     }
 
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleUserNotFoundException(
+        ex: UserNotFoundException,
+    ): ResponseEntity<ErrorResponse> {
+        logger.warn("UserNotFoundException: ${ex.message}")
+        return ResponseEntity.badRequest().body(
+            ErrorResponse(
+                error = ex.message ?: "Пользователь не найден!"
+            )
+        )
+    }
+
     @ExceptionHandler(Exception::class)
     fun handleGenericException(
         ex: Exception,
     ): ResponseEntity<ErrorResponse> {
-        logger.error("Unhandled exception: ${ex.message}", ex)
+        logger.error("Unhandled exception: ${ex.message}")
         logger.debug(ex.stackTraceToString())
         return ResponseEntity.badRequest().body(
             ErrorResponse(
