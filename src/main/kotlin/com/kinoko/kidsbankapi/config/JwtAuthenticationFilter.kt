@@ -18,13 +18,14 @@ class JwtAuthenticationFilter(
     private val userDetailsService: UserDetailsService,
     private val jwtService: JwtService
 ) : OncePerRequestFilter() {
-    private val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
+        val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
+
         try {
             if (request.requestURI.startsWith("/api/auth") && request.requestURI != "/api/auth/who-am-i") {
                 filterChain.doFilter(request, response)
@@ -35,11 +36,15 @@ class JwtAuthenticationFilter(
             logger.debug("authHeader = $authHeader")
 
             if (authHeader == null || authHeader.isEmpty()) {
+                logger.debug("Token is empty or null")
                 filterChain.doFilter(request, response)
                 return
             }
 
-            if (!authHeader.startsWith("Bearer ")) return
+            if (!authHeader.startsWith("Bearer ")) {
+                logger.debug("Token is not started from 'Bearer '")
+                return
+            }
 
             val token = authHeader.substring(7)
             val userPhoneNumber = jwtService.getLogin(token)
@@ -56,7 +61,10 @@ class JwtAuthenticationFilter(
 
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                     SecurityContextHolder.getContext().authentication = authToken
-                } else return
+                } else {
+                    logger.debug("Token is invalid")
+                    return
+                }
             }
 
             filterChain.doFilter(request, response)
