@@ -19,7 +19,8 @@ fun UserEntity.toUserDTO(): User {
         birthDate = this.birthDate,
         city = this.city,
         role = this.role,
-        isGetKid = isGetChild
+        isGetKid = isGetChild,
+        childName = this.child?.toUserDTO()?.fullName
     )
 }
 

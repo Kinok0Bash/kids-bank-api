@@ -14,5 +14,6 @@ data class User(
     val birthDate: LocalDate = LocalDate.now(),
     val city: String = "",
     val role: Role = Role.PARENT,
+    val childName: String?,
     val isGetKid: Boolean = false
 )
