@@ -51,12 +51,12 @@ class JwtService(
     // Экстракторы
     fun getLogin(token: String): String = extractClaims(token).subject
 
-    private fun extractClaims(rawToken: String): Claims {
-        val token = rawToken.substring(7)
-        return Jwts.parser()
-            .verifyWith(signKey)
-            .build()
-            .parseSignedClaims(token)
-            .payload
-    }
+    private fun extractClaims(token: String): Claims = Jwts
+        .parser()
+        .verifyWith(signKey)
+        .build()
+        .parseSignedClaims(
+            token.substring(7)
+        )
+        .payload
 }
