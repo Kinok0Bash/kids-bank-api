@@ -55,6 +55,8 @@ class JwtService(
         .parser()
         .verifyWith(signKey)
         .build()
-        .parseSignedClaims(token)
+        .parseSignedClaims(
+            token.substring(7)
+        )
         .payload
 }

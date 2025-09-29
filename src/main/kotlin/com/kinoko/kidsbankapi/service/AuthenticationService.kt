@@ -135,7 +135,7 @@ class AuthenticationService(
 
     fun whoAmI(token: String): User {
         val userEntity = userRepository.findByLogin(
-            jwtService.getLogin(token.substring(7))
+            jwtService.getLogin(token)
         ) ?: throw UserNotFoundException("Пользователь не найден")
 
         val user = userEntity.toUserDTO()

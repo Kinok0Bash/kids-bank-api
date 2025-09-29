@@ -32,21 +32,20 @@ class JwtAuthenticationFilter(
                 return
             }
 
-            val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
-            logger.debug("authHeader = $authHeader")
+            val token = request.getHeader(HttpHeaders.AUTHORIZATION)
+            logger.debug("authHeader = $token")
 
-            if (authHeader == null || authHeader.isEmpty()) {
+            if (token == null || token.isEmpty()) {
                 logger.debug("Token is empty or null")
                 filterChain.doFilter(request, response)
                 return
             }
 
-            if (!authHeader.startsWith("Bearer ")) {
+            if (!token.startsWith("Bearer ")) {
                 logger.debug("Token is not started from 'Bearer '")
                 return
             }
 
-            val token = authHeader.substring(7)
             val userPhoneNumber = jwtService.getLogin(token)
 
             if (userPhoneNumber.isNotEmpty() && SecurityContextHolder.getContext().authentication == null) {
