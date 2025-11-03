@@ -37,11 +37,11 @@ class ParentService(
         val child = UserEntity (
             login = request.username,
             authPassword = passwordEncoder.encode(request.password),
-            lastname = request.lastname,
-            name = request.name,
-            fatherName = request.fatherName,
+            lastname = request.lastname.trim(),
+            name = request.name.trim(),
+            fatherName = request.fatherName.trim(),
             birthDate = request.birthDate,
-            city = request.city,
+            city = request.city.trim(),
             role = Role.CHILD,
             child = null
         )

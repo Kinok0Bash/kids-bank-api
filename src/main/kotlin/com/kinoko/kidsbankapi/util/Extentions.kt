@@ -20,7 +20,11 @@ fun UserEntity.toUserDTO(): User {
         city = this.city,
         role = this.role,
         isGetKid = isGetChild,
-        childName = this.child?.toUserDTO()?.fullName
+        childName = String.format(
+            "%s %s",
+            this.child?.lastname?.trim() ?: "Ребенок",
+            this.child?.name?.trim() ?: "Отсутствует"
+        )
     )
 }
 

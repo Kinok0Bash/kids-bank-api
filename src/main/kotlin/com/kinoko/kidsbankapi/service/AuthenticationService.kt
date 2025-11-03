@@ -80,13 +80,13 @@ class AuthenticationService(
         }
 
         val user = UserEntity (
-            login = request.username,
+            login = request.username.trim(),
             authPassword = passwordEncoder.encode(request.password),
-            lastname = request.lastname,
-            name = request.name,
-            fatherName = request.fatherName,
+            lastname = request.lastname.trim(),
+            name = request.name.trim(),
+            fatherName = request.fatherName.trim(),
             birthDate = request.birthDate,
-            city = request.city,
+            city = request.city.trim(),
             role = Role.PARENT,
             child = null
         )
