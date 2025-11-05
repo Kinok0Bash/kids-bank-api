@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController
     name = "Транзакции",
     description = "Контроллер функционала, связанного с оплатой переводами и прочим"
 )
-class TransactionController(private val transactionService: TransactionService) {
+class TransactionController(
+    private val transactionService: TransactionService,
+) {
     private val logger = LoggerFactory.getLogger(TransactionController::class.java)
 
     @GetMapping("/last")
@@ -36,7 +38,7 @@ class TransactionController(private val transactionService: TransactionService) 
 
     @GetMapping("/history")
     @Operation(summary = "Получение истории транзакций")
-    fun getAllTransactions(@RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String): ResponseEntity<MutableList<Transaction>> {
+    fun getAllTransactions(@RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String): ResponseEntity<List<Transaction>> {
         logger.info("Запрос на получение всех транзакций")
         return ResponseEntity.ok(transactionService.getAllTransactions(token))
     }
@@ -47,7 +49,7 @@ class TransactionController(private val transactionService: TransactionService) 
         @RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String,
         @RequestBody request: TransferRequest
     ): ResponseEntity<TransactionResponse> {
-        logger.info("Запрос на перевод ребенку ${request.sum} рубль(ей)")
+        logger.info("Запрос на перевод ребенку ${request.sum} рублей")
         return ResponseEntity.ok(transactionService.transfer(token, request.sum))
     }
 
@@ -57,7 +59,7 @@ class TransactionController(private val transactionService: TransactionService) 
         @RequestHeader(name = HttpHeaders.AUTHORIZATION) token: String,
         @RequestBody request: PayRequest
     ): ResponseEntity<TransactionResponse> {
-        logger.info("Запрос на оплату счета от ${request.shopId} на ${request.sum}")
+        logger.info("Запрос на оплату счета от магазина с id=${request.shopId} на сумму ${request.sum} рублей")
         return ResponseEntity.ok(transactionService.pay(token, request))
     }
 }

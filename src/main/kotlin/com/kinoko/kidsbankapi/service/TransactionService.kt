@@ -32,6 +32,7 @@ class TransactionService(
     fun getLastTransactions(token: String): List<Transaction> {
         val transactions = getTransactions(token).map {
             Transaction(
+                toId = it.to.id,
                 name = it.to.name,
                 category = it.to.category.name,
                 sum = it.sum,
@@ -39,25 +40,23 @@ class TransactionService(
             )
         }
             .sortedByDescending { it.date }
+            .subList(0, 5)
 
         logger.info("Список последних пяти для пользователя ${jwtService.getLogin(token)} получен")
         return transactions
     }
 
-    fun getAllTransactions(token: String): MutableList<Transaction> {
-        val transactionEntities = getTransactions(token)
-        val transactions = mutableListOf<Transaction>()
-
-        transactionEntities.forEach { transactionEntity ->
-            transactions.add(
-                Transaction(
-                    name = transactionEntity.to.name,
-                    category = transactionEntity.to.category.name,
-                    sum = transactionEntity.sum,
-                    date = transactionEntity.time
-                )
+    fun getAllTransactions(token: String): List<Transaction> {
+        val transactions = getTransactions(token).map {
+            Transaction(
+                toId = it.to.id,
+                name = it.to.name,
+                category = it.to.category.name,
+                sum = it.sum,
+                date = it.time
             )
         }
+            .sortedByDescending { it.date }
 
         logger.info("Список транзакций для пользователя ${jwtService.getLogin(token)} получен")
         return transactions
