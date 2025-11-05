@@ -22,6 +22,9 @@ services:
     restart: always
     image: bank
     container_name: bank
+    environment:
+      - TZ=Europe/Moscow
+      - JAVA_TOOL_OPTIONS=-Duser.timezone=Europe/Moscow
     volumes:
       - /home/kinoko/logs/bank-api:/logs
     networks:
